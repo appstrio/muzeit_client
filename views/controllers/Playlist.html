@@ -1,0 +1,70 @@
+
+<!-- !!!!! NEW !!!!!  -->
+<div class="tab-on-the-go">
+    <header class="pl-header clearfix otg-header">
+        <form action="" class="pl-search">
+            <input type="text" class="pl-search-input" placeholder="Search..." ng-model="searchInput" ng-click="switchToSearch()">
+        </form>
+        <a href="" class="pl-unsubscribe-btn" ng-show="showUnsubscribeButton()">Unsubscribe</a>
+        <div class="dropdown" ng-show="showAddAllDropDown()">
+            <a href="" class="pl-unsubscribe-btn"  ng-click="openAddAllToPlaylistWindow($event)">Add All</a>
+
+            <div class="drop-body">
+                <!--<a href="" class="create-new-btn ellipsis" contenteditable="true">Create new playlist</a>-->
+                <a href="" class="create-new-btn ellipsis"><input type="text" class="create-new-input" placeholder="Create new playlist" ng-model="allToNewPlaylistTitle" on-key-up="addAllToNewPlaylistKeyPress($event)"/></a>
+
+                <ul class="drop-list">
+                    <li class="ellipsis" ng-repeat="playlist in playlists" ng-click="addAllToExistingPlaylist(playlist)"><a href="">{{playlist.title}}</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="otg-body">
+        <div class="otg-content scrollable">
+            <div class="pl-view clearfix" ng-show="showPlaylistHeader()">
+                <a href="" class="back-btn">back</a>
+                <div class="pl-info">
+                    <div class="pl-thumbnail" style="float:left;width:32px;height:32px;margin-right:7px;" ng-show="playlist.thumbnail"><img  style="width:32px;height:32px;" ng-src="{{playlist.thumbnail}}"/></div>
+                    <h2 class="pl-title">{{playlist.title|formatPlaylistTitle}}</h2>
+                    <h3 class="pl-author">{{playlist.owner}} </h3>
+                    <ul class="pl-features">
+                        <li>2 new shares </li>
+                        <li>1 new like</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div ng-show="loading"><img src="/img/loader.gif"/> Loading...<span ng-show="!discover.data || discover.data.length == 0">Please wait...It should take a few minutes</span></div>
+
+            <ul class="otg-list" ng-init="setSortable()" ng-show="!loading">
+                <li class="item clearfix"  ng-repeat="song in playlist.songs" ng-click="selectSong(song,playlist)" ng-class="{active : isSongActive(song)}">
+                    <div class="song-thumbnail" style="background-image:url({{song.thumbnail}})"></div>
+                    <!--<img ng-src="{{song.thumbnail}}" alt="" class="otg-label">-->
+                    <h4 class="otg-song-name">{{song.title}}</h4>
+                    <ul class="otg-song-features clearfix">
+                        <li>{{song.duration|formatSecondsAsTime:'mm:ss'}}</li>
+                        <li ng-show="song.views">{{song.views|number}}  Views</li>
+                    </ul>
+                    <ul class="otg-social clearfix">
+                        <li class="so_dragg"><a href="">dragg</a></li>
+                        <li class="so_like"><a href="">like</a></li>
+                        <li class="so_share"><a href="">share</a></li>
+                        <li class="so_delete" ng-click="removeSong(song,playlist,$event)"><a href="">delete</a></li>
+                        <li class="so_add" ng-show="showAddToPlaylistDropDown()">
+                            <a href="" class="opener" ng-click="openAddToPlaylistWindow($event)">Add to playlist</a>
+                            <div class="drop-body">
+                                   <a href="" class="create-new-btn ellipsis"><input type="text" class="create-new-input" placeholder="Create new playlist" ng-model="addToNewPlaylistTitle" on-key-up="addToNewPlaylistKeyPress($event,playlist.songs[$index])"/></a>
+                                <ul class="drop-list">
+                                    <li class="ellipsis" ng-repeat="playlist in playlists" ng-click="addSongToPlaylist(song,playlist,$event)"><a href="">{{playlist.title}}</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <span class="before"></span>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+

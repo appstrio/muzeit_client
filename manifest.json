@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "Muzeit - Music Player for Chrome™(Beta)",
+  "description" : "The best Youtube experience for Google Chrome!",
+  "version": "0.0.0.27",
+   "background": {
+	  "page" : "background.html",
+      "persistent": false
+	},
+	
+	"browser_action": {
+    "default_icon": "img/icon/icon19.png",
+    "default_title": "Chrome Player Title",
+    "default_popup": "popup.html"
+  },
+    "content_scripts": [
+        {
+            "matches": ["http://www.hadarlandao.com/chrome-player/*"],
+            "js": ["js/libs/jquery.min.js", "js/content_scripts/music-iframe-content-script.js"],
+            "run_at" : "document_end",
+            "all_frames" : true
+        },
+        {
+            "matches": ["http://music-player-server.herokuapp.com/v1/auth/*"],
+            "js": ["js/content_scripts/auth.js"],
+            "run_at" : "document_end",
+            "all_frames" : true
+        }
+    ],
+    "content_security_policy": "script-src 'self' https://s.ytimg.com https://www.youtube.com https://www.google.com https://ajax.googleapis.com; object-src 'self' https://www.youtube.com ",
+
+ 	"permissions": [
+  		"tabs",
+		"idle",
+		"<all_urls>",
+        "storage"
+		],
+    "default_locale" : "en"
+}
+

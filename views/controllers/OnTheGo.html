@@ -1,0 +1,25 @@
+<!--<div id="OnTheGoController">
+	<div class="header">
+        <h1>On The Go</h1>
+        <div class="add-all-button float">
+            <span>+</span>
+            <div class="new-playlist-box">
+                <input type="text" ng-model="playlistName" placeholder="Playlist name..."/>
+                <button ng-click="save()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tracks-list">
+		<table >
+			<tr ng-repeat="item in userService.onTheGo().songs" class="track" ng-click="launch(item)" ng-class-odd="'odd'">
+				<td class="thumbnail"><img ng-src="{{item.thumbnail}}"/></td>
+				<td class="title">{{item.title}}</td>
+				<td class="actions"></td>
+				</tr>
+		</table>
+	</div>
+</div>-->
+
+
+<ng-include src="'views/controllers/Playlist.html'"></ng-include>

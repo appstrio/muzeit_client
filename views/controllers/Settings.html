@@ -1,0 +1,21 @@
+
+                <div class="tabs-wrapper" ng-controller="SettingsController">
+                    <div class="tab-settings">
+                        <ul class="settings-list">
+                            <li class="set_youtube">
+                                    <span class="set-img">
+                                      Import your<br>youtube playlists
+                                    </span>
+                                <a href="" class="custom-btn">Import</a>
+                            </li>
+                            <li class="set_facebook">
+                                    <span class="set-img">
+                                    Share music with your facebook friends!
+                                    </span>
+                                <a href="" class="custom-btn" ng-show="!user._id" ng-click="connectFacebook()">Connect</a>
+                                <a href="" class="custom-btn" ng-show="user._id" ng-click="logout()">Disconnect</a>
+                            </li>
+                        </ul>
+                        <a href="#/debug">DEBUG</a>
+                        {{bb.user}}
+                    </div>

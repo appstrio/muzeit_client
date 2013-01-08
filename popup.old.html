@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-csp >
+<head>
+    <meta charset="utf-8">
+    <title>muzeit</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body ng-controller="MainController">
+<div class="wrapper" class="ng-cloak">
+    <div class="holder">
+        <header class="header clearfix">
+            <div class="current-song" ng-show="!currentState.song">
+                <figure class="cur-img-wrapper">
+                    <img ng-src="" alt="">
+                </figure>
+
+                <div class="cur-song-info">
+                    <a href="" class="play-list-link"></a>
+                    <h1 class="cur-song-title ellipsis">No song selected </h1>
+                    <ul class="progress-bar clearfix">
+                        <li class="pb_cur-time"></li>
+                        <li class="pb_visual">
+                                       <span class="pb-cashed">
+                                           <span class="pb-current" style="width:0%"></span>
+                                       </span>
+                        </li>
+                        <li class="pb_duration"></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="current-song" ng-show="currentState.song">
+                <figure class="cur-img-wrapper">
+                    <img ng-src="{{currentState.song.thumbnail}}" alt="{{currentState.song.title}}">
+                </figure>
+                <a href="#/playlist/"><small>{{currentState.playerState.mode}}</small></a>
+
+                <div class="cur-song-info">
+                    <a href="" class="play-list-link"></a>
+                    <h1 class="cur-song-title ellipsis">{{currentState.song.title}} </h1>
+                    <ul class="progress-bar clearfix">
+                        <li class="pb_cur-time">{{currentState.playerState.time|formatSecondsAsTime:'mm:ss'}}</li>
+                        <li class="pb_visual">
+                                       <span class="pb-cashed">
+                                           <span class="pb-current" style="width:{{(currentState.playerState.time/currentState.playerState.length*100)}}%"></span>
+                                       </span>
+                        </li>
+                        <li class="pb_duration">{{currentState.playerState.length|formatSecondsAsTime:'mm:ss'}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="playback-control">
+                <ul class="playback clearfix">
+                    <li class="pb_bakcward" ng-click="previousSong()"><a href=""></a></li>
+                    <li class="pb_play" ng-click="togglePlay()"><a href=""></a></li>
+                    <li class="pb_forward" ng-click="nextSong()"><a href=""></a></li>
+                </ul>
+                <div class="volume-controll">
+                    <span class="vc_pointer"></span>
+                    <span class="vc_level"></span>
+                </div>
+            </div>
+
+        </header>
+        <div class="player-body clearfix">
+            <div class="tabs-control">
+                <ul class="tabs-control-wrapper">
+                    <li class="tc_on-the-go" ng-class="{active : isActiveScreen('/playlist/on-the-go')}"><a href="#/playlist/on-the-go">On the Go</a></li>
+                    <li class="tc_playlists" ng-class="{active : isActiveScreen('/playlists')}"><a href="#/playlists">Playlists</a></li>
+                    <li class="tc_discover" ng-class="{active : isActiveScreen('/discover')}"><a href="#/discover">Discover</a></li>
+                    <li class="tc_settings" ng-class="{active : isActiveScreen('/settings')}"><a href="#/settings">Settings</a></li>
+                </ul>
+            </div>
+            <div class="tabs-wrapper" >
+                <div class="tab" ng-view>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="js/libs/script.js"></script>
+    <script type="text/javascript" src="js/common/dependencyList.js"></script>
+    <script type="text/javascript" src="js/boot.popup.js"></script>
+
+</body>
+</html>

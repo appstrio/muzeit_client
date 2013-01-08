@@ -1,0 +1,9 @@
+{
+    "baseURL" : {
+        "message" : "http://music-player-server.herokuapp.com/v1/"
+    },
+    "baseAuthURL" : {
+        "message" : "http://music-player-server.herokuapp.com/auth/*"
+    }
+
+}

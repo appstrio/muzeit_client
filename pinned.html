@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" ng-csp>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
+
+    <title>{{title}}</title>
+    <link rel="icon" href="/img/icon/icon32.png" type="image/png" />
+
+
+
+</head>
+<body ng-controller="PinnedController" style="background:#333;">
+<div style="">
+    <iframe  style="width:700px;height:500px;border:0px;" src="http://www.hadarlandao.com/chrome-player/iframe.html"></iframe>
+</div>
+
+{{currentState.playerState}}
+<div ng-view></div>
+</body>
+<style>
+    .playing{
+        color:red;
+    }
+</style>
+
+<script type="text/javascript" src="js/libs/script.js"></script>
+<script type="text/javascript" src="js/common/dependencyList.js"></script>
+<script type="text/javascript" src="js/boot.pinned.js"></script>
+
+</html>
