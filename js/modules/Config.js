@@ -15,7 +15,8 @@
             onTheGo          : "account/onthego",
             playlists        : "playlists",
             discover         : "discover",
-            facebookPlaylist : "facebookPlaylist"
+            facebookPlaylist : "facebookPlaylist",
+            friends          : "getfacebookfriends"
 
         };
 

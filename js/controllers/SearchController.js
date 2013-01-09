@@ -1,5 +1,6 @@
-function SearchController($scope,$http,bb) {
+function SearchController($scope,$http,bb,$location) {
 
+    $scope.friends = angular.copy(bb.bg.friends());
     $scope.playlists = bb.bg.playlists();
     $('#searchInput').focus();
 
@@ -67,6 +68,13 @@ function SearchController($scope,$http,bb) {
         }
     };
 
+    $scope.goToUser = function(friend,e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(friend.uid){
+            $location.path('playlist/facebookPlaylist/'+friend.uid);
+        }
+    };
 
 };
 

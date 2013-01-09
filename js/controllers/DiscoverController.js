@@ -64,7 +64,7 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
         if(item.from && item.from.facebookId){
             $location.path('playlist/facebookPlaylist/'+item.from.facebookId);
         }
-    }
+    };
 
 };
 

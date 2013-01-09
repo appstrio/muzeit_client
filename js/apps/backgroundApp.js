@@ -8,9 +8,12 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         readyDefer,
         user,
         onTheGo,
-        playlists;
+        playlists,
+        friends,
+        _friends;
 
     var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
+    var friends = $resource(config.baseUrl + config.paths.friends);
 
     var getPlaylist = function(id,success,error){
         if (playlists){
@@ -259,6 +262,9 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         playlists : function(){
           return playlists;
         },
+        friends : function(){
+          return _friends;
+        },
 
         isAlive : isAlive
 
@@ -275,6 +281,7 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             if(user.ownedPlaylists)getAllPlaylists(user.ownedPlaylists);
             if(user.onTheGo)getOnTheGo(user.onTheGo._id);
             isReady=true;
+            _friends = friends.query();
             readyDefer.resolve(remoteAccount);
 
         },function(err){
