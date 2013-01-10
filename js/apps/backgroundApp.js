@@ -103,7 +103,7 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
 
 
     var playNextSong = function(forceRepeat,allowShuffle){
-        if(currentState.playlist){
+        if(!currentState.playlist){
             stop();
             return;
         }
@@ -127,9 +127,8 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                 index++;
             }
         }
-
-        recent.addSong(song);
         changeCurrentState({song : currentState.playlist.songs[index], play:true},{loadNewVideo:true,refreshIframe:true},{updatePinnedPlayer:true,updatePopupPlayer : true});
+        if(currentState.playlist.title != 'recent')recent.addSong(song);
     };
 
     var playPreviousSong = function(){

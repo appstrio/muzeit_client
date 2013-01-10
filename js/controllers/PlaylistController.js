@@ -1,6 +1,7 @@
 function PlaylistController ($scope,bb,$routeParams,$location,discover){
     $scope.showAddToPlaylistDropDown = false;
     $scope.loading=true;
+    $scope.dontPushToRecent = false;
     var init = function(){
         if($routeParams.playlistId == "on-the-go"){
             $scope.playlist = bb.bg.onTheGo();
@@ -8,6 +9,7 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
         }else if ($routeParams.playlistId == "recent"){
             $scope.playlist = bb.bg.resources.recent.get();
             $scope.loading=false;
+            $scope.dontPushToRecent = true;
         }else if ($routeParams.playlistId == "facebookPlaylist"){
             $scope.playlist = discover.getFacebookUserPlaylist($routeParams.fbUserId,function(playlist){
                 $scope.playlist = playlist;
