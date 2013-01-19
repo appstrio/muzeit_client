@@ -1,0 +1,27 @@
+#PinnedController .tab-playlists{
+    width:600px;
+    margin:0 auto;
+    border: 1px solid #222;
+}
+
+#PinnedController .tab-playlists ul.pl-list li{
+    cursor:pointer;
+}
+
+#PinnedController .tab-playlists .pl-view{
+    background: #222;
+    padding:8px;
+}
+
+#PinnedController .tab-playlists .pl-view::before{
+    background: transparent;
+}
+
+#PinnedController .tab-playlists .pl-view .pl-info{
+}
+
+#PinnedController #header{
+  width:700px;
+    margin:10px auto;
+}
+

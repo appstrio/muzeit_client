@@ -29,8 +29,6 @@ angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageMo
         port.onMessage.addListener(function(msg) {
                $rootScope.$broadcast('background',msg);
                backgroundTimestamp=new Date().getTime();
-               console.log('backgroundTimestamp',backgroundTimestamp);
-
         });
 
         var checkBgIsAlive = function(){

@@ -8,7 +8,7 @@
 
     <div class="otg-body">
         <div class="otg-content scrollable">
-            <div ng-show="loading"><img src="/img/loader.gif"/> Loading...<span ng-show="!discover.data || discover.data.length == 0">Please wait...It should take a few minutes</span></div>
+            <div ng-show="loading"><img src="/img/loader.gif"/> Loading...<span ng-show="!discover.data || discover.data.length == 0"><br/>Please wait...It may take a few minutes</span></div>
             <ul class="otg-list">
                 <li class="item clearfix"  ng-repeat="item in discover.data" ng-click="renderItem(item)" ng-class="{active : isItemPlaying(item)}">
                     <div class="discover-thumbnail" style="background-image:url({{item.data.thumbnail}})">
@@ -39,6 +39,11 @@
                 </li>
 
             </ul>
+            <div style="text-align:center;min-height:30px;" >
+                <a href="" style="color:white;text-decoration: none;" ng-click="loadMore($event)" ng-show="loadMoreStatus == 'Load More'">{{loadMoreStatus}}</a>
+                <a href="" ng-show="loadMoreStatus == 'Loading...'" style="color:white;text-decoration: none;"><img src="/img/loader.gif">  {{loadMoreStatus}}</a>
+            </div>
+
         </div>
     </div>
 </div>

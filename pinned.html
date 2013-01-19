@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="css/popup.css" />
+    <link rel="stylesheet" type="text/css" href="css/pinned.css" />
 
     <title>{{title}}</title>
     <link rel="icon" href="/img/icon/icon32.png" type="image/png" />
@@ -10,12 +11,14 @@
 
 
 </head>
-<body ng-controller="PinnedController" style="background:#333;">
-<div style="">
-    <iframe  style="width:700px;height:500px;border:0px;" src="http://www.hadarlandao.com/chrome-player/iframe.html"></iframe>
+<body id="PinnedController" ng-controller="PinnedController" style="background:#333;">
+<div id="header">
+    <img src="img/muzeit-logo.png">
+</div>
+<div style="width:700px;height:460px;overflow: hidden;margin: 0 auto;">
+    <iframe  style="width:700px;height:460px;border:0px;" src="http://www.hadarlandao.com/chrome-player/iframe.html"></iframe>
 </div>
 
-{{currentState.playerState}}
 <div ng-view></div>
 </body>
 <style>

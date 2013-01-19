@@ -513,7 +513,7 @@ body {background: #fff; color: #fff; font: 12px/1.2 Helvetica, Helvetica Neue, A
 .otg-search-input::-webkit-input-placeholder {color: #2e2e2e}
 
 .otg-search-option {margin: 5px 0 0; padding: 0; list-style: none; font: normal 11px/17px Arial; color: #fff; float: left;}
-    .otg-search-option > li {float: left;}
+    .otg-search-option > li {float: left;margin-left:5px;}
     .otg-search-option > li:first-child {margin-right: 5px;}
         .otg-search-option > li a {display: inline-block; height: 17px; padding: 0 5px; color: #fff; text-decoration: none; border: 1px solid transparent;
             -webkit-transition-property: all;

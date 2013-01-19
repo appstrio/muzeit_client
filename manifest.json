@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Muzeit - Music Player for Chrome™(Beta)",
   "description" : "The best Youtube experience for Google Chrome!",
-  "version": "0.0.0.28",
+  "version": "0.0.0.32",
    "background": {
 	  "page" : "background.html",
       "persistent": false

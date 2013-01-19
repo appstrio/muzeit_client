@@ -100,8 +100,8 @@ window.addEventListener("message", function(event) {
             player.pauseVideo();
         }
 
-        if(currentState.tempFlags.loadNewVideo) loadVideo(currentState.song.youtubeId);
-        if(currentState.tempFlags.newVolume) player.setVolume(currentState.tempFlags.newVolume);
+        if(currentState.tempFlags && currentState.tempFlags.loadNewVideo && currentState.song.youtubeId) loadVideo(currentState.song.youtubeId);
+        if(currentState.tempFlags && currentState.tempFlags.newVolume) player.setVolume(currentState.tempFlags.newVolume);
 
     }else if (event.data && (event.data.type == "play")){
              player.playVideo();

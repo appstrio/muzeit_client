@@ -57,6 +57,20 @@ function PinnedController($scope,$location,bb) {
             updatePlayerState();
         }
     });
+
+    $scope.selectSong = function(song,playlist,dontPushToRecent){
+        if(!playlist) playlist = $scope.playlist;
+        if(!playlist)playlist={songs:[]};
+        bb.bg.methods.changeCurrentState({playlist : playlist, song:song,play:true},{loadNewVideo:true,refreshIframe : true},{updatePinnedPlayer : true});
+        if(!dontPushToRecent)bb.bg.resources.recent.addSong($scope.currentState.song);
+    };
+
+    $scope.isSongActive = function(song){
+        return (bb.bg.currentState.song === song);
+    };
+
+
+
     // listen to message passing
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse) {

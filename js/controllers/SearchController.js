@@ -1,6 +1,16 @@
 function SearchController($scope,$http,bb,$location) {
-
     $scope.friends = angular.copy(bb.bg.friends());
+
+    var lastSearch = bb.bg.getLastSearch();
+    $scope.searchResults = [];
+    $scope.searchIn = "youtube";
+
+    if(lastSearch){
+        if(lastSearch.searchResults)$scope.searchResults = lastSearch.searchResults;
+        if(lastSearch.searchInput)$scope.searchInput = lastSearch.searchInput;
+        if(lastSearch.searchIn) $scope.searchIn = lastSearch.searchIn;
+    }
+
     $scope.playlists = bb.bg.playlists();
     $('#searchInput').focus();
 
@@ -9,7 +19,12 @@ function SearchController($scope,$http,bb,$location) {
 	}
 
     $scope.playSong = function(song){
-        $scope.selectSong(song,null);
+        var playlist = {
+            _id : 'search',
+            title : "Search",
+            songs : $scope.searchResults
+        }
+        $scope.selectSong(song,playlist);
     };
 
 
@@ -20,13 +35,27 @@ function SearchController($scope,$http,bb,$location) {
         }
     };
 
+    $scope.changeSearchIn = function(changeTo,e){
+        e.preventDefault();
+        e.stopPropagation();
+        $scope.searchIn = changeTo;
+    };
 
+    $scope.search = function(restrictResults,e){
+        if(lastSearch){
+            lastSearch.searchInput = $scope.searchInput;
+            lastSearch.searchIn = $scope.searchIn;
+        }
+         if($scope.searchIn == "friends"){
 
-    $scope.searchYoutube = function(e,restrict){
-        var url = "https://gdata.youtube.com/feeds/api/videos?orderby=relevance&max-results=10&v=2";
+         }else{
+             $scope.searchYoutube(restrictResults,e);
+         }
+    };
 
+    $scope.searchYoutube = function(restrict,e){
+        var url = "https://gdata.youtube.com/feeds/api/videos?orderby=relevance&max-results=20&v=2";
 
-        $scope.searchResults = [];
         if (restrict && $scope.searchInput.length <= 2)return;
         $http.get(url,{
             params : {q:$scope.searchInput,category : 'Music'},
@@ -41,8 +70,8 @@ function SearchController($scope,$http,bb,$location) {
         }).success(function(array){
                 $scope.searchResults.length=0;
                 $scope.searchResults = array;
-                //initUITemp();
-            });
+                bb.bg.setLastSearch({searchResults : array});
+        });
     };
 
     $scope.openAddToPlaylist =function(e){

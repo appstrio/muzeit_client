@@ -1,28 +1,24 @@
 <div class="tab-on-the-go">
 <header class="otg-header clearfix">
     <form action="" class="otg-search">
-        <input type="search" id="searchInput" class="otg-search-input" placeholder="Search..." ng-change="searchYoutube()" ng-model="searchInput">
+        <input type="search" id="searchInput" class="otg-search-input" placeholder="Search..." ng-change="search(true,$event)" ng-model="searchInput">
     </form>
-    <ul class="otg-search-option" style="display:none;">
+    <ul class="otg-search-option">
         <li class="so_label">Search in:</li>
-        <li class="active"><a href="">YouTube</a></li>
-        <li class=""><a href="">My Playlists</a></li>
-        <li class=""><a href="">Discover</a></li>
+        <li ng-click="changeSearchIn('youtube',$event)" ng-class="{active : searchIn == 'youtube'}"><a href="">YouTube</a></li>
+        <li ng-click="changeSearchIn('friends',$event)"  ng-class="{active : searchIn == 'friends'}"><a href="">Friends</a></li>
     </ul>
 </header>
 <div class="otg-body">
 <div class="otg-content scrollable">
 <ul class="otg-list">
-    <li ng-show="searchInput">--Friends--</li>
-    <li class="item clearfix" ng-repeat="friend in friends|filter:searchInput | limitTo : 2" ng-click="goToUser(friend,$event)" ng-show="searchInput&&searchInput != ''">
+    <li class="item clearfix" ng-repeat="friend in friends|filter:searchInput | limitTo : 10" ng-show="searchIn == 'friends'" ng-click="goToUser(friend,$event)" ng-show="searchInput&&searchInput != ''">
         <div class="song-thumbnail" style="background-image:url({{friend.pic_square}})"></div>
         <!--<img ng-src="{{song.thumbnail}}" alt="" class="otg-label">-->
         <h4 class="otg-song-name">{{friend.name}}</h4>
         <span class="before"></span>
     </li>
-    <li ng-show="searchResults && searchInput">--Songs--</li>
-
-    <li class="item clearfix" ng-repeat="song in searchResults" ng-click="playSong(song)" ng-class="{active : (currentState.song == song)}">
+    <li class="item clearfix" ng-repeat="song in searchResults" ng-click="playSong(song)" ng-class="{active : (currentState.song == song)}" ng-show="searchIn == 'youtube'">
         <div class="song-thumbnail" style="background-image:url({{song.thumbnail}})"></div>
         <!--<img ng-src="{{song.thumbnail}}" alt="" class="otg-label">-->
         <h4 class="otg-song-name">{{song.title}}</h4>

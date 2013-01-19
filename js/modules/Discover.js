@@ -3,8 +3,32 @@ var discover = angular.module('discover', []);
 discover.service('discover', ['$http','config','storage',function($http,config,storage) {
 
     var collection={data: []};
-    var oldTimeout = 1000 * 60 * 10;
+    var oldTimeout = 1000 * 60 * 60;
     var maxSize = 100;
+
+    var init = function(success,error){
+        getLocal(function(){
+            if( isOld() || collection.data.length ==0){
+                getServer(function(){
+                    (success||angular.noop)(collection);
+                },function(err){
+                    (error||angular.noop)(err);
+                });
+            }else{
+                (success||angular.noop)(collection);
+            }
+        });
+        return collection;
+    };
+
+    var loadMore = function(success,error){
+       return getServer(function(){
+           (success||angular.noop)(collection);
+       },function(err){
+           (error||angular.noop)(err);
+       });
+    };
+
 
     var applyObjectToResource = function( resource, object ) {
         if(!resource)resource={};
@@ -27,8 +51,7 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
           if(object.discover){
               collection.data.length=0;
               collection.data=null;
-              collection=null;
-              collection=object.discover;
+              angular.extend(collection,object.discover);
               //removeDuplicates();
               //storeLocal();
               (fn||angular.noop)(collection);
@@ -43,7 +66,7 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
     };
 
 
-    var getServer = function(success){
+    var getServer = function(success,error){
         return $http.get(config.baseUrl + config.paths.discover).success(function(response){
             applyObjectToResource(collection.data,response);
             if(collection.data.length >= maxSize)collection.data.splice(0,maxSize);
@@ -54,6 +77,7 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
             response.length=0;
             response=null;
         }).error(function(err){
+                (error||angular.noop)(err);
                 console.error('Error getting discover ',err);
         });
 
@@ -76,20 +100,6 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
       return (new Date().getTime() -  collection.timestamp > oldTimeout);
     };
 
-    var init = function(success,error){
-        getLocal(function(){
-           if( isOld() || collection.data.length ==0){
-              getServer(function(){
-                  (success||angular.noop)(collection);
-              },function(err){
-                  (error||angular.noop)(err);
-              });
-           }else{
-               (success||angular.noop)(collection);
-           }
-        });
-        return collection;
-    };
     var getFacebookUserPlaylist = function(fbUserId,success,error){
         if(!fbUserId)return false;
         var result = {data:[]};
@@ -102,10 +112,13 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
         return result;
     };
 
+
+
     return {
+        init : init,
+        loadMore : loadMore,
         getLocal : getLocal,
         getServer : getServer,
-        init : init,
         getFacebookUserPlaylist :  getFacebookUserPlaylist
     }
 }]);

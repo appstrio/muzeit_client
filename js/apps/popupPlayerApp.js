@@ -72,10 +72,8 @@ angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','direc
 }).run(function(bb,$location,$rootScope){
 
         bb.init(function(){
-            console.log('popupapp run');
             if(bb.bg.currentState && bb.bg.currentState.path){
                 $rootScope.$apply(function(){
-                    console.log('bb.bg.currentState.path '+bb.bg.currentState.path);
                     $location.path(bb.bg.currentState.path);
                 });
             }

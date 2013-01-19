@@ -1,18 +1,10 @@
 <div class="tab-playlists" ng-controller="PlaylistController">
-    <header class="pl-header clearfix">
-        <form action="" class="pl-search">
-            <input type="text" class="pl-search-input" placeholder="Search..." ng-model="searchInput" ng-click="switchToSearch()">
-        </form>
-        <a href="" class="pl-unsubscribe-btn" ng-show="!isSelfPlaylist()">Unsubscribe</a>
-        <a href="" class="pl-unsubscribe-btn" ng-show="isSelfPlaylist() && !isOnTheGo()" ng-click="removePlaylist()">Remove</a>
-        <a href="" class="pl-unsubscribe-btn" ng-show="isOnTheGo()" style="position:relative;" ng-click="showAddToPlaylistDropDown=true">Add To Playlist
-            <div style="position: absolute;bottom:-50px;left:0;width:100%;height:50px;background:red;" ng-show="showAddToPlaylistDropDown">
-                <input type="text" ng-model="newPlaylistTitle" on-key-up="newPlaylistKeyPress($event)"/>
-            </div>
-        </a>
-
-
-    </header>
+    <div class="pl-view clearfix">
+        <div class="pl-info">
+            <div class="pl-thumbnail" style="float:left;width:32px;height:32px;margin-right:7px;" ng-show="playlist.thumbnail"><img  style="width:32px;height:32px;" ng-src="{{playlist.thumbnail}}"/></div>
+            <h2 class="pl-title">{{playlist.title|formatPlaylistTitle}}</h2>
+        </div>
+    </div>
 
     <div class="pl-body">
         <div class="pl-view clearfix" ng-show="showPlaylistsNavigation">
@@ -28,7 +20,7 @@
         </div>
         <div class="pl-content scrollable" ng-class="{withHeader : showPlaylistsNavigation}">
             <ul class="pl-list">
-                <li class="item clearfix" ng-repeat="song in playlist.songs" ng-click="selectSong(song)" ng-class="{active : isSongActive(song)}">
+                <li class="item clearfix" ng-repeat="song in playlist.songs" ng-click="selectSong(song,playlist,dontPushToRecent)" ng-class="{active : isSongActive(song)}">
                     <img ng-src="{{song.thumbnail}}" alt="" class="pl-label">
                     <h4 class="pl-song-name">{{song.title}}</h4>
                     <ul class="pl-song-features clearfix">

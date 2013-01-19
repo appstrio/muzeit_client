@@ -10,7 +10,9 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         onTheGo,
         playlists,
         friends,
-        _friends;
+        _friends,
+        lastSearch={};
+
 
     var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
     var friends = $resource(config.baseUrl + config.paths.friends);
@@ -155,7 +157,6 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var logout = function(){
-        console.log('logout')
         return $http({method : 'get', url : config.baseUrl + config.paths.logout}).success(function(){
 
           init();
@@ -265,7 +266,16 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
           return _friends;
         },
 
-        isAlive : isAlive
+        isAlive : isAlive,
+
+        setLastSearch : function(lastSearchObject){
+           angular.extend(lastSearch,lastSearchObject);
+        },
+
+        getLastSearch : function(){
+            return lastSearch;
+        }
+
 
     };
 

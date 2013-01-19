@@ -3,7 +3,6 @@ var dependencies = [
     deps.ConfigModule,
     deps.PlaylistModule,
     deps.StorageModule,
-    deps.UserModule,
     deps.SyncedResource,
     deps.Account,
     deps.Recent

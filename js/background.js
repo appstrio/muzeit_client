@@ -30,7 +30,6 @@ window.checkPinnedPlayer = function(){
     window.isPinnedPlayerOpen=false;
     // ping pinned player
     chrome.extension.sendMessage({to: "pinned", type: "ping"}, function(response) {
-        console.log('response',response);
         if(response && response.status == "alive"){
             window.isPinnedPlayerOpen=true;
         }else{
@@ -64,7 +63,6 @@ window.playPinnedPlayer = function(){
 };
 
 window.openPinnedPlayer = function(force){
-    console.log("window.isPinnedPlayerOpen",window.isPinnedPlayerOpen);
     if(force || !window.isPinnedPlayerOpen){
         var pinnedUrl = chrome.extension.getURL('pinned.html');
         chrome.tabs.create({url : pinnedUrl, pinned : true, active: false});
