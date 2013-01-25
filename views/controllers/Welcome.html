@@ -1,11 +1,12 @@
 <div id="welcomeScreen">
-    <h1 style="text-align: center;">Welcome to Muzeit</h1>
-    <h3 style="text-align: center;">Start using Muzeit by connecting with Facebook!</h3>
+    <div class="logo-container">
+        <img src="/img/muzeit.logo122x101.png"/>
+    </div>
+
+    <h1>Welcome to your private radio station</h1>
+    <h3 style="text-align: center;">Muzeit is a new hangout for you and your Facebook friends to share and listen to music</h3>
     <ul class="settings-list" style="width:180px;">
         <li class="set_facebook" style="border:0;">
-            <span class="set-img">
-            Share music with your facebook friends!
-            </span>
             <a href="" class="custom-btn" ng-show="!user._id" ng-click="connectFacebook()">Connect</a>
             <a href="" class="custom-btn" ng-show="user._id" ng-click="logout()">Disconnect</a>
         </li>

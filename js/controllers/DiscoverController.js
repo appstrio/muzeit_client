@@ -68,16 +68,19 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
     };
 
     $scope.goToUserThumbnail = function(item,e){
+        console.log('item',item);
         e.preventDefault();
         e.stopPropagation();
-        if(item.from && item.from.facebookId){
-            $location.path('playlist/facebookPlaylist/'+item.from.facebookId);
+        if(item.from && item.from.fid || item.from.fId){
+            $location.path('playlist/facebookPlaylist/'+(item.from.fid||item.from.fId));
         }
     };
 
     $scope.renderItem = function(item){
         if(item.itemType == "song"){
             $scope.selectSong(item.data,discoverPlaylist);
+        }else if(item.itemType == "playlist"){
+            $location.path('playlist/'+item.data._id);
         }
     };
 

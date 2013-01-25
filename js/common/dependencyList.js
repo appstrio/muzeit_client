@@ -25,6 +25,7 @@ var deps = {
     OnTheGoController: '/js/controllers/OnTheGoController.js',
     PinnedMainController: '/js/controllers/PinnedMainController.js',
     PlaylistController: '/js/controllers/PlaylistController.js',
+    PinnedPlaylistController: '/js/controllers/PinnedPlaylistController.js',
     SearchController: '/js/controllers/SearchController.js',
     SettingsController: '/js/controllers/SettingsController.js',
     PinnedController: '/js/controllers/PinnedController.js',

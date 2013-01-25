@@ -643,7 +643,7 @@ input[type=text].create-new-input {outline:none;border:0;background:transparent;
     border-color: #2c2c2c;
     }
 
-    .otg-list > li > .otg-label, .otg-list > li > .otg-song-name, .otg-list > li > .otg-song-features {position: relative; z-index: 2;}
+    .otg-list > li  .otg-label, .otg-list > li  .otg-song-name, .otg-list > li  .otg-song-features {position: relative; z-index: 2;}
 
     .otg-list > li.active { padding: 3px 0 4px 3px; background-color: #474747; border: solid 1px #000;}
        /* .otg-list > li .otg-label {float: left; border: 1px solid #000; margin-right: 11px; opacity: 1;min-width:50px;min-height:40px;max-width:55px; max-height: 43px;height:43px;width:43px;} /* height and width added by hadar*/
@@ -653,7 +653,7 @@ input[type=text].create-new-input {outline:none;border:0;background:transparent;
 
         .otg-list > li .otg-song-features {margin: 0; padding: 4px 0 0 0; list-style: none; font: normal 11px Arial; color: #989898; text-shadow: -1px 1px 0 #000}
 
-         .otg-list > li:hover .otg-song-name,.otg-list > li:hover .otg-user-action,.otg-list > li:hover .otg-song-features,  .otg-list > li.hover .otg-song-name,.otg-list > li.hover .otg-song-features, .otg-list > li.active .otg-song-name,.otg-list > li.active .otg-song-features {color: #fff;}
+         .otg-list > li:hover .otg-song-name,.otg-list > li:hover .otg-user-action,.otg-list > li:hover h4.otg-song-name,.otg-list > li:hover .otg-song-features,  .otg-list > li.hover .otg-song-name,.otg-list > li.hover .otg-song-features, .otg-list > li.active .otg-song-name,.otg-list > li.active .otg-song-features {color: #fff !important;}
             .otg-list > li .otg-song-features > li {float: left; margin-right: 4px;} 
             .otg-list > li .otg-song-features > li:first-child {padding-right: 4px; border-right: 1px dotted #989898;}
 
@@ -661,7 +661,9 @@ input[type=text].create-new-input {outline:none;border:0;background:transparent;
 
     .otg-social {position: absolute; z-index: 15; top: 0px; right: 0; margin: 0; padding: 0; width: 98px; list-style: none; display: none; border-left: 1px solid #2c2c2c;}
     .otg-social.otg-not-dreggable {width: 87px;}
-    .item:hover .otg-social,.item.hover .otg-social {display: block;}
+    .otg-social.otg-for-discover {width: 58px;}
+
+.item:hover .otg-social,.item.hover .otg-social {display: block;}
         .otg-social > li {float: left;  width: 28px; height: 28px; border-right: 1px solid #2c2c2c;  border-bottom: 1px solid #2c2c2c;background-color: rgba(97,97,97,0); background-image: -webkit-linear-gradient(bottom, rgba(61,61,61,.8), rgba(52,50,50,.8) 24%, rgba(100,100,100,.8));
     background-image: -moz-linear-gradient(bottom, rgba(61,61,61,.8), rgba(52,50,50,.8) 24%, rgba(100,100,100,.8));
     background-image: linear-gradient(to top, rgba(61,61,61,.8), rgba(52,50,50,.8) 24%, rgba(100,100,100,.8));
@@ -669,6 +671,7 @@ input[type=text].create-new-input {outline:none;border:0;background:transparent;
         -webkit-transition-duration: .15s;
         -webkit-transition-timing-function: ease;
 }
+        .otg-social.otg-for-discover > li {float:right;}
             .otg-social > li > a {text-indent: 100%; overflow: hidden; display: block; width: 100%; height: 100%; white-space: nowrap;}  
 
     .otg-social > li.so_like {}

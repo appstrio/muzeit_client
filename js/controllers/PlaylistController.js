@@ -24,7 +24,8 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
             $scope.showPlaylistsNavigation=true;
              bb.bg.methods.getPlaylist($routeParams.playlistId,function(response){
                 $scope.playlist=response;
-                $scope.loading=false;
+
+                 $scope.loading=false;
                 if(!$scope.$$phase) {
                     $scope.$apply();
                 }
@@ -33,11 +34,13 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
             });
         }
 
-        if ($scope.playlist.title == "<on-the-go>" && $routeParams.playlistId != "on-the-go"){
+        if ($scope.playlist && $scope.playlist.title == "<on-the-go>" && $routeParams.playlistId != "on-the-go"){
             $location.path('/playlist/on-the-go');
-        }else if($scope.playlist.title == "Recent" && $routeParams.playlistId != "recent"){
+        }else if($scope.playlist && $scope.playlist.title == "Recent" && $routeParams.playlistId != "recent"){
             $location.path('/playlist/recent');
         }
+
+
     };
 
     bb.init(function(promise){
@@ -83,10 +86,6 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     };
 
     $scope.addAllToExistingPlaylist = function(playlist){
-        if(e.keyCode == 13){
-            $scope.addAllToNewPlaylist($scope.playlist,$scope.allToNewPlaylistTitle);
-        }
-
     };
 
 
@@ -116,9 +115,17 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
         return $scope.showPlaylistHeader();
     };
 
+    $scope.showSubscribeButton = function(){
+        return ($scope.showPlaylistHeader() && $scope.playlist.owner != $scope.myUserId());
+    };
 
 
 
+
+
+    $scope.owner = function(playlist){
+        return ((playlist.owner == $scope.myUserId()) ? "By me" : "");
+    };
 
     $scope.setSortable = function(){
             $(".otg-list").disableSelection();

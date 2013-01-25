@@ -24,10 +24,10 @@ function Song(xml,id,name,youtubeId,length,url,thumbnail,duration,views) {
 Song.prototype.parseXML = function (xml){
 	var media = $(xml).find('media\\:group').eq(0);
 	var embedable = $(xml).find('yt\\:accesscontrol[action=embed]').eq(0).attr('permission');
-
 	this.title			 = $(xml).find('title').text();
 	this.youtubeId		 = media.find('yt\\:videoId').eq(0).text();
-	//this.url			 = media.find('media\\:player').eq(0).attr('url');
+    this._id             =  this.youtubeId;
+        //this.url			 = media.find('media\\:player').eq(0).attr('url');
 	this.thumbnail		 = media.find('media\\:thumbnail').eq(0).attr('url');
     this.views =  $(xml).find('yt\\:statistics').eq(0).attr('viewCount');
     this.duration =  parseInt(media.find('media\\:content').eq(0).attr('duration'));

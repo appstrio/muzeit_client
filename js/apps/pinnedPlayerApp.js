@@ -10,7 +10,7 @@ angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageMo
 
     $routeProvider.when('/playlist/:playlistId', {
         templateUrl: 'views/controllers/PinnedPlaylist.html',
-        controller: PlaylistController,
+        controller: PinnedPlaylistController,
         resolve: bbDelay
     });
 

@@ -1,9 +1,10 @@
 var discover = angular.module('discover', []);
 
-discover.service('discover', ['$http','config','storage',function($http,config,storage) {
+discover.service('discover', ['$http','config','storage','$q',function($http,config,storage,$q) {
 
     var collection={data: []};
     var oldTimeout = 1000 * 60 * 60;
+    var facebookPlaylistOldTimeout = 1000 * 60 * 60 * 24;
     var maxSize = 100;
 
     var init = function(success,error){
@@ -67,7 +68,8 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
 
 
     var getServer = function(success,error){
-        return $http.get(config.baseUrl + config.paths.discover).success(function(response){
+        var defer = $q.defer();
+        var songsPromise =  $http.get(config.baseUrl + config.paths.discover).success(function(response){
             applyObjectToResource(collection.data,response);
             if(collection.data.length >= maxSize)collection.data.splice(0,maxSize);
             //removeDuplicates();  TODO
@@ -81,6 +83,11 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
                 console.error('Error getting discover ',err);
         });
 
+        $q.all([songsPromise],function(array){
+            (success||angular.noop)(array);
+        },function(errArray){
+            (error||angular.noop)(errArray);
+        });
     };
 
     var removeDuplicates = function(){
@@ -102,14 +109,47 @@ discover.service('discover', ['$http','config','storage',function($http,config,s
 
     var getFacebookUserPlaylist = function(fbUserId,success,error){
         if(!fbUserId)return false;
-        var result = {data:[]};
-            $http.get(config.baseUrl + config.paths.facebookPlaylist + "/" + fbUserId).success(function(data){
-                applyObjectToResource(result.data,data);
-                (success||angular.noop)(data);
-            }).error(function(err){
-                (error||angular.noop)(err);
+        var result = {data:{}};
+            getFacebookListLocal(fbUserId,function(object){
+                if(object){
+                    applyObjectToResource(result.data,object.data);
+                    (success||angular.noop)(object.data);
+                }else{
+                    $http.get(config.baseUrl + config.paths.facebookPlaylist + "/" + fbUserId).success(function(data){
+                        applyObjectToResource(result.data,data);
+                        storeFacebookListLocal(fbUserId,result);
+                        (success||angular.noop)(data);
+                    }).error(function(err){
+                            (error||angular.noop)(err);
+                    });
+                }
             });
         return result;
+    };
+
+    var storeFacebookListLocal = function(fbUserId,playlist){
+        if(!playlist.data || playlist.data.length <= 0)return false;
+        var key =  'fb_playlist_'+fbUserId;
+        playlist.timestamp = new Date().getTime();
+        var objectToStore = {};
+        objectToStore[key] = playlist;
+        storage.set(objectToStore);
+    };
+
+    var getFacebookListLocal = function(fbUserId,fn){
+        var key =  'fb_playlist_'+fbUserId;
+        return storage.get(key,function(object){
+            if(object[key] && !isFacebookPlaylistOld(object[key])){
+              (fn||angular.noop)(object[key]);
+            }else{
+                (fn||angular.noop)(false);
+            }
+
+        });
+    };
+
+    var isFacebookPlaylistOld = function(playlist){
+         return (!playlist || !playlist.timestamp ||  new Date().getTime() - playlist.timestamp > facebookPlaylistOldTimeout);
     };
 
 

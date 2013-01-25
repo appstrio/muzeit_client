@@ -9,10 +9,10 @@ function MyPlaylistsController($scope,$location,bb,$location) {
 
     $scope.playlistOwnerString = function(playlist){
         if(playlist.owner == $scope.user._id){
-            return "my playlist";
+            return "My playlist";
         }else{
             //return "By " _ playlist.owner.displayName + ".";
-            return "By Naftali Bennet";
+            return "By Naftali Bennet :)";
         }
     };
 

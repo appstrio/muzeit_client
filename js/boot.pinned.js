@@ -8,7 +8,7 @@ var dependencies = [
     deps.DiscoverController,
     deps.MyPlaylistsController,
     deps.PinnedController,
-    deps.PlaylistController,
+    deps.PinnedPlaylistController,
     deps.SearchController,
     deps.SettingsController,
     deps.filters,

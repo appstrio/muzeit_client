@@ -1,4 +1,4 @@
-function PinnedController($scope,$location,bb) {
+function PinnedController($scope,$location,bb,$rootScope) {
 
     var currentState;
 

@@ -1,4 +1,4 @@
-    var playlist = angular.module('playlist', []);
+     var playlist = angular.module('playlist', []);
 
     playlist.service('playlist', ['$resource','config',function($resource,config) {
         var suffix = "/:listController:id/:action";

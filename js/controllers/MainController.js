@@ -57,6 +57,7 @@ function MainController($scope,$location,$http,bb) {
     };
 
     $scope.showWelcomeScreen = function(){
+        return true;
       return (!$scope.loading && !$scope.isConnected());
     };
     $scope.isConnected = function(){
@@ -68,6 +69,7 @@ function MainController($scope,$location,$http,bb) {
     });
 
     $scope.switchToSearch = function(){
+        bb.bg.setLastSearch({searchInput : ''});
         if($location.path() != '/search' )$location.path('/search');
     };
 
@@ -251,7 +253,12 @@ function MainController($scope,$location,$http,bb) {
             $scope.alert.display=false;
         });
 
-    }
+    };
+
+    $scope.myUserId = function(){
+        return bb.bg.user()._id;
+    };
+
 
     // listen to message passing
     $( ".vc_pointer" ).draggable({ containment: "parent", scroll: false, axis: "y" ,

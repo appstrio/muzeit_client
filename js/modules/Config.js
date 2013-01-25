@@ -8,15 +8,16 @@
         var baseUrl = chrome.i18n.getMessage('baseURL') || "http://music-player-server.herokuapp.com/v1/";
 
         var paths = {
-            account          : "account",
-            facebookAuth     : "auth/facebook/oauth",
-            googleAuth       : "auth/google/oauth",
-            logout           : "logout",
-            onTheGo          : "account/onthego",
-            playlists        : "playlists",
-            discover         : "discover",
-            facebookPlaylist : "facebookPlaylist",
-            friends          : "getfacebookfriends"
+            account             : "account",
+            facebookAuth        : "auth/facebook/oauth",
+            googleAuth          : "auth/google/oauth",
+            logout              : "logout",
+            onTheGo             : "account/onthego",
+            playlists           : "playlists",
+            discover            : "discover",
+            discoverPlaylists   : "discoverPlaylists",
+            facebookPlaylist    : "facebookPlaylist",
+            friends             : "getfacebookfriends"
 
         };
 
