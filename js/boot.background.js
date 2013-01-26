@@ -5,7 +5,8 @@ var dependencies = [
     deps.StorageModule,
     deps.SyncedResource,
     deps.Account,
-    deps.Recent
+    deps.Recent,
+    deps.YoutubeModule
 ];
 
 

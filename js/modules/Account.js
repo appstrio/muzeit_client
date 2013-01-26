@@ -1,6 +1,6 @@
 var account = angular.module('account', []);
 
-account.service('account', ['$http','config','storage',function($http,config,storage) {
+account.service('account', ['$http','config','storage','$rootScope',function($http,config,storage,$rootScope) {
 
     var account={};
     var oldTimeout = 1000 * 60 * 60 * 24;
@@ -41,17 +41,17 @@ account.service('account', ['$http','config','storage',function($http,config,sto
                 console.error('Failed loading user account');
          });
     };
-
     var clearAccount = function(){
         if(!account){
             account = {};
             return;
         }
-
-        delete account.providers;
-        delete account.profile;
-        delete account.timestamp;
+        delete account._id;
+        account=null;
+        account={};
+        if(!$rootScope.$$phase)$rootScope.$apply();
     };
+
 
     var isOld = function(object){
         return (!object.timestamp || new Date().getTime() - object.timestamp > oldTimeout);
@@ -79,6 +79,12 @@ account.service('account', ['$http','config','storage',function($http,config,sto
         });
     };
 
+    var clear = function(){
+        clearAccount();
+        storeLocal();
+        console.log('account after clear',account);
+    };
+
     return {
         init : init,
         refreshUserFromRemote : refreshUserFromRemote,
@@ -87,7 +93,8 @@ account.service('account', ['$http','config','storage',function($http,config,sto
         },
         connectFacebook : connectFacebook,
         connectGoogle : connectGoogle,
-        logout : logout
+        logout : logout,
+        clear : clear
     };
 
 }]);

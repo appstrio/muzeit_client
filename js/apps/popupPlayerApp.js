@@ -50,7 +50,20 @@ angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','direc
         resolve: bbDelay
   }).
 
-   when('/loading', {
+   when('/youtube', {
+       templateUrl: 'views/controllers/Youtube.html',
+       controller: YoutubeController,
+       resolve: bbDelay
+   }).
+
+   when('/youtube/:playlistId', {
+       templateUrl: 'views/controllers/YoutubePlaylist.html',
+       controller: YoutubePlaylistController,
+       resolve: bbDelay
+   }).
+
+
+       when('/loading', {
        templateUrl: 'views/controllers/Loading.html',
        resolve: bbDelay
    }).

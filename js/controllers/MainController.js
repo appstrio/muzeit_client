@@ -57,7 +57,6 @@ function MainController($scope,$location,$http,bb) {
     };
 
     $scope.showWelcomeScreen = function(){
-        return true;
       return (!$scope.loading && !$scope.isConnected());
     };
     $scope.isConnected = function(){
@@ -95,6 +94,11 @@ function MainController($scope,$location,$http,bb) {
     $scope.connectFacebook = function(){
         bb.bg.methods.connectFacebook();
     };
+
+    $scope.connectGoogle = function(){
+        bb.bg.methods.connectGoogle();
+    };
+
 
     $scope.logout = function(){
         bb.bg.methods.logout().then(function(){
@@ -259,6 +263,9 @@ function MainController($scope,$location,$http,bb) {
         return bb.bg.user()._id;
     };
 
+    $scope.skipWelcomeScreen = function(){
+        init();
+    };
 
     // listen to message passing
     $( ".vc_pointer" ).draggable({ containment: "parent", scroll: false, axis: "y" ,

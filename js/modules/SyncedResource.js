@@ -1,6 +1,6 @@
 
 angular.module('syncedResource', []).
-        factory('syncedResource', ['$resource', 'storage','config', function($resource, storage,config) {
+        factory('syncedResource', ['$resource', 'storage','config','$rootScope', function($resource, storage,config,$rootScope) {
 
         function SyncedResourceFactory(path,key, paramDefaults, actions, oldTimeout, maxItems, isLazy, isArray){
             if(!oldTimeout) oldTimeout = 1000 * 60 * 60 * 24;
@@ -74,6 +74,11 @@ angular.module('syncedResource', []).
 
             };
 
+            var handleError = function(err){
+                console.log('handleError on synced '+key);
+                $rootScope.$emit('httpError',err);
+            };
+
             return {
                 query : function(fn){
                     if(collection && collection.lastUpdate && !isOld(collection)){
@@ -93,10 +98,11 @@ angular.module('syncedResource', []).
                                 applyLocalObjectToResource( collection.resource, data);
                                 (fn||angular.noop)(data);
                                 storeLocal({dirty : false, lastUpdate : new Date().getTime()});
-                            },function(){
+                            },function(err){
                                 //applyLocalObjectToResource(collection,{items:[]})
                                 (fn||angular.noop)(collection);
-                            });
+                                 handleError(err);
+                           });
                             //applyLocalObjectToResource( collection.resource, remoteResults);
 
                         }
@@ -114,7 +120,7 @@ angular.module('syncedResource', []).
                         }
                     }
 
-                    return resource.get(params,fn);
+                    return resource.get(params,fn,handleError);
                 },
 
                 save : function(params,fn){
@@ -125,16 +131,19 @@ angular.module('syncedResource', []).
                         collection.items[newIndex]._id = data._id;
                         (fn||angular.noop)(data);
                         storage.set(collection);
-                    },function(){
+                    },function(err){
                         //error
                         console.error('error save',collection);
                         storeLocal({dirty : true});
+                        handleError(err);
                     });
                 },
 
                 update : function(params,fn){
                     return resource.update(params,function(data){
                         (fn||angular.noop)(data);
+                    },function(err){
+                        handleError(err);
                     });
                 },
 
@@ -147,8 +156,9 @@ angular.module('syncedResource', []).
                     storeLocal();
                     return resource.delete(params,function(data){
                         (fn||angular.noop)(data);
-                    },function(){
+                    },function(err){
                         storeLocal({dirty : true});
+                        handleError(err);
                     });
                 },
 

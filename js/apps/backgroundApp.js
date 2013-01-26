@@ -1,5 +1,5 @@
-angular.module('backgroundApp', ['ngResource','config','syncedResource','playlist','account','StorageModule','recent'], function($routeProvider, $locationProvider) {
-}).run(['config','account','$window','$resource','storage','$http','recent','$q',function(config,account,$window,$resource,storage,$http,recent,$q){
+angular.module('backgroundApp', ['ngResource','config','syncedResource','playlist','account','StorageModule','recent','youtube'], function($routeProvider, $locationProvider) {
+}).run(['config','account','$window','$resource','storage','$http','recent','$q','$rootScope','youtube',function(config,account,$window,$resource,storage,$http,recent,$q,$rootScope,youtube){
     var playlists,
         currentState={},
         popupPort,
@@ -11,7 +11,8 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         playlists,
         friends,
         _friends,
-        lastSearch={};
+        lastSearch={},
+        access_tokens={};
 
 
     var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
@@ -156,6 +157,10 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         chrome.tabs.create({url : config.baseUrl + config.paths.facebookAuth, pinned : false, active: true});
     };
 
+    var connectGoogle = function(){
+        chrome.tabs.create({url : config.baseUrl + config.paths.googleAuth, pinned : false, active: true});
+    };
+
     var logout = function(){
         return $http({method : 'get', url : config.baseUrl + config.paths.logout}).success(function(){
 
@@ -230,7 +235,9 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         resources :{
             account : account,
             playlist : playlist,
-            recent : recent
+            recent : recent,
+            youtube : youtube,
+            access_tokens : access_tokens
         },
         methods: {
             getPlaylist : getPlaylist,
@@ -241,10 +248,11 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             playPreviousSong : playPreviousSong,
             playNextSong : playNextSong,
             connectFacebook : connectFacebook,
+            connectGoogle : connectGoogle,
             removeSongFromPlaylist : removeSongFromPlaylist,
             addSongToPlaylist : addSongToPlaylist,
             logout : logout,
-            setNewVolume : setNewVolume
+            setNewVolume : setNewVolume,
         },
         currentState : currentState,
         isReady : function(){
@@ -356,14 +364,16 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                          if(object.onTheGo && object.onTheGo.dirty){
                              angular.extend(onTheGo,object.onTheGo.data);
                              playlist.put({id : onTheGo._id, action:'songs'},onTheGo.songs,function(response){
-                             },function(e){
-                                console.error('Error updating on the go songs list',e);
+                             },function(err){
+                                 handleHttpErrors(err);
+                                 console.error('Error updating on the go songs list',err);
                                  storeLocal('onTheGo',onTheGo,true);
                              });
                          }
                         storeLocal('onTheGo',onTheGo);
-                     },function(e){
-                        console.error('Error getting onTheGo',e);
+                     },function(err){
+                        console.error('Error getting onTheGo',err);
+                         handleHttpErrors(err);
                         //error
                         onTheGo=new playlist({songs : [],title: "<on-the-go>", owner: "me"});
                      });
@@ -373,6 +383,18 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             }
         });
     };
+
+    var importYoutubePlaylists = function(accessToken){
+        youtube.getYoutubePlaylistFeed(accessToken);
+    };
+    var handleHttpErrors = function(err){
+        switch (err.status){
+            case 401:
+                account.clear();
+                break;
+        }
+    }
+    $rootScope.$on('httpError',handleHttpErrors);
 
     init();
 
@@ -405,6 +427,12 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                 switch(request.type){
                     case "auth":
                         init();
+                        if(request.provider == 'youtube'){
+                            access_tokens.youtube = request.accessTokenObject.accessToken;
+                            changeCurrentState({path : 'youtube'});
+                            //importYoutubePlaylists(request.accessTokenObject.accessToken);
+
+                        }
                         sendResponse({close : true});
                         break;
                 }

@@ -13,6 +13,8 @@ var dependencies = [
     deps.DebugController,
     deps.RecentController,
     deps.DiscoverModule,
+    deps.YoutubeController,
+    deps.YoutubePlaylistController,
 
     deps.filters,
     deps.directives,

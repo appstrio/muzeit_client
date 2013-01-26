@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Muzeit - Music Player for Chrome™(Beta)",
   "description" : "The best Youtube experience for Google Chrome!",
-  "version": "0.0.0.32",
+  "version": "0.0.0.35",
    "background": {
 	  "page" : "background.html",
       "persistent": false
@@ -21,11 +21,18 @@
             "all_frames" : true
         },
         {
-            "matches": ["http://music-player-server.herokuapp.com/v1/auth/*"],
+            "matches": ["http://music-player-server.herokuapp.com/v1/auth/facebook/oauth/*"],
             "js": ["js/content_scripts/auth.js"],
             "run_at" : "document_end",
             "all_frames" : true
+        },
+        {
+            "matches": ["http://music-player-server.herokuapp.com/v1/auth/google/oauth/*"],
+            "js": ["js/content_scripts/auth.youtube.js"],
+            "run_at" : "document_end",
+            "all_frames" : true
         }
+
     ],
     "content_security_policy": "script-src 'self' https://s.ytimg.com https://www.youtube.com https://www.google.com https://ajax.googleapis.com; object-src 'self' https://www.youtube.com ",
 

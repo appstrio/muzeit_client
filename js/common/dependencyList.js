@@ -31,8 +31,13 @@ var deps = {
     PinnedController: '/js/controllers/PinnedController.js',
     DebugController : '/js/controllers/DebugController.js',
     RecentController : '/js/controllers/RecentController.js',
+    YoutubeController : '/js/controllers/YoutubeController.js',
+    YoutubePlaylistController : '/js/controllers/YoutubePlaylistController.js',
+
     ConfigModule: '/js/Modules/Config.js',
     DiscoverModule: '/js/Modules/Discover.js',
+    YoutubeModule: '/js/Modules/Youtube.js',
+
 
 
 
