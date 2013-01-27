@@ -10,7 +10,7 @@
         <div class="otg-content scrollable">
             <div class="pl-view clearfix">
                 <div class="pl-info">
-                    <h2 class="pl-title">My YouTube Playlists</h2>
+                    <h2 class="pl-title">{{title}}</h2>
                     <ul class="pl-features">
                         <!--<li>2 new shares </li>-->
                         <!--<li>1 new like</li>-->
@@ -27,10 +27,18 @@
                     </ul>
                     <span class="before"></span>
                 </li>
-                <li class="item clearfix" ng-show="youtubePlaylists.length == 0" ng-click="goToDiscover()">
-                    <h4 class="otg-song-name">No Playlists... :)</h4>
+                <li class="item clearfix" ng-repeat="user in subscriptions" ng-click="goToUser(user,$event)">
+                    <div class="song-thumbnail" style="background-image:url({{user.thumbnail}})"></div>
+                    <!--<img ng-src="{{playlistThumbnail(playlist)}}" alt="" class="otg-label">-->
+                    <h4 class="otg-song-name">{{user.title}}</h4>
                     <ul class="otg-song-features clearfix">
-                        <li>Click here to discover new playlists</li>
+                    </ul>
+                    <span class="before"></span>
+                </li>
+
+                <li class="item clearfix" ng-show="youtubePlaylists.length == 0 && subscriptions.length == 0" ng-click="goToDiscover()">
+                    <h4 class="otg-song-name">No playlists were found sorry... :)</h4>
+                    <ul class="otg-song-features clearfix">
                     </ul>
                 </li>
 

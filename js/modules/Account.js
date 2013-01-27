@@ -70,6 +70,10 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
         chrome.windows.create({url : config.baseUrl + 'auth/google/oauth',width:500, height:500, focused:true});
     };
 
+    var refreshGoogleAccessToken = function(){
+      return $http.get(config.baseUrl + 'auth/google/oauth');
+    };
+
     var logout = function(){
         return $http.get(config.baseUrl + 'logout').success(function(response){
             account=null;
@@ -93,6 +97,7 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
         },
         connectFacebook : connectFacebook,
         connectGoogle : connectGoogle,
+        refreshGoogleAccessToken : refreshGoogleAccessToken,
         logout : logout,
         clear : clear
     };

@@ -2,9 +2,9 @@ var youtubeModule = angular.module('youtube', []);
 
 youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootScope,$http) {
     var baseUrl =  "https://gdata.youtube.com/feeds/api/";
-    var baseUserPlaylistsPath = "users/default/playlists";
+    var baseUserPlaylistsPath = "users";
     var basePlaylistPath = "playlists";
-
+    var baseSubscriptionsPath = "users/default/subscriptions";
 
     var buildUrl = function(path,params){
         var url = baseUrl + path + "?v=2";
@@ -14,9 +14,20 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
         return url;
     };
 
-    var getYoutubePlaylistFeed = function(accessToken){
-        var url = buildUrl(baseUserPlaylistsPath,{access_token : accessToken});
-        return $http.get(url);
+    var getYoutubePlaylistFeed = function(accessToken,userId){
+        var userPath;
+        if(userId){
+            userPath = "/" + userId + "/playlists";
+        }else{
+            userPath = "/default/playlists";
+        }
+        var url = buildUrl(baseUserPlaylistsPath+userPath,{access_token : accessToken});
+        return $http.get(url).error(handleError);
+    };
+
+    var getSubscriptions = function(accessToken){
+        var url = buildUrl(baseSubscriptionsPath,{access_token : accessToken});
+        return $http.get(url).error(handleError);
     };
 
     var getYoutubePlaylist = function(playlistId,accessToken){
@@ -45,9 +56,16 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
             }});
     };
 
+    var handleError = function(err){
+        if(err.status == 401 || err.statusCode == 401){
+
+        }
+    }
+
     return {
         getYoutubePlaylistFeed : getYoutubePlaylistFeed,
-        getYoutubePlaylist : getYoutubePlaylist
+        getYoutubePlaylist : getYoutubePlaylist,
+        getSubscriptions : getSubscriptions
     };
 
 }]);

@@ -148,10 +148,12 @@ function MainController($scope,$location,$http,bb) {
     $scope.addAllToNewPlaylist = function(playlist,newPlaylistTitle){
         if(!newPlaylistTitle) return false;
 
-        var newPlaylist;
-        newPlaylist = angular.copy(playlist);
+        var newPlaylist={};
+        newPlaylist.songs = angular.copy(playlist.songs);
         newPlaylist.title = newPlaylistTitle;
-
+        newPlaylist.isPublic=true;
+        tempStripSongsV(newPlaylist);
+        console.log(JSON.stringify(newPlaylist));
         bb.bg.methods.addNewPlaylist(newPlaylist,function(playlist){
             $scope.$apply(function(){
                 $location.path('/playlist/'+playlist._id);
@@ -165,6 +167,11 @@ function MainController($scope,$location,$http,bb) {
 
     };
 
+    var tempStripSongsV = function(playlist){
+        for(var i in playlist.songs){
+            delete playlist.songs[i].__v;
+        }
+    };
 
     $scope.addSongToNewPlaylist = function(song,newPlaylistTitle){
         if(!newPlaylistTitle) return false;

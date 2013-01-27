@@ -5,6 +5,7 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     var init = function(){
         if($routeParams.playlistId == "on-the-go"){
             $scope.playlist = bb.bg.onTheGo();
+            console.log('$scope.playlist',$scope.playlist);
             $scope.loading=false;
         }else if ($routeParams.playlistId == "recent"){
             $scope.playlist = bb.bg.resources.recent.get();
