@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-            <ul class="otg-list">
+            <ul class="otg-list" ng-show="!loading && !noAccessToken">
                 <li class="item clearfix" ng-repeat="playlist in youtubePlaylists" ng-click="goToPlaylist(playlist,$event)">
                     <div class="song-thumbnail" style="background-image:url({{playlist.thumbnail}})"></div>
                     <!--<img ng-src="{{playlistThumbnail(playlist)}}" alt="" class="otg-label">-->
@@ -41,8 +41,14 @@
                     <ul class="otg-song-features clearfix">
                     </ul>
                 </li>
-
             </ul>
+            <div ng-show="loading">
+                <img src="/img/loader.gif">
+            </div>
+            <div ng-show="noAccessToken && !loading">
+                <a href="" ng-click="connectYoutube($event)">Connect With YouTube</a>
+            </div>
+
         </div>
     </div>
 

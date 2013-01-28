@@ -32,16 +32,15 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var addNewPlaylist = function(newPlaylist,success,error){
-        //newPlaylist = new playlist(newPlaylist);
         return playlist.save(tempStripPropertiesFromPlaylist(newPlaylist),function(response){
             playlists.push(response);
             storeLocal('playlists',playlists);
             (success||angular.noop)(response);
         },function(e){
             //TODO : get rid of this
-            newPlaylist._id=genereateGUID();
-            playlists.push(new playlist(newPlaylist));
-            storeLocal('playlists',playlists,true);
+            //newPlaylist._id=genereateGUID();
+            //playlists.push(new playlist(newPlaylist));
+            //storeLocal('playlists',playlists,true);
             (error||angular.noop)(e);
         });
     };
@@ -231,6 +230,11 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         return new Date().getTime();
     };
 
+    var setGoogleAccessToken = function(accessToken){
+        access_tokens.youtube = accessToken;
+    };
+
+
     var exports={
         resources :{
             account : account,
@@ -253,6 +257,7 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             addSongToPlaylist : addSongToPlaylist,
             logout : logout,
             setNewVolume : setNewVolume,
+            setGoogleAccessToken : setGoogleAccessToken
         },
         currentState : currentState,
         isReady : function(){
@@ -371,6 +376,7 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                              });
                          }
                         storeLocal('onTheGo',onTheGo);
+                         playlists.unshift(onTheGo);
                      },function(err){
                         console.error('Error getting onTheGo',err);
                          handleHttpErrors(err);
@@ -394,6 +400,8 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                 break;
         }
     }
+
+
     $rootScope.$on('httpError',handleHttpErrors);
 
     init();
@@ -428,7 +436,7 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                     case "auth":
                         init();
                         if(request.provider == 'youtube'){
-                            access_tokens.youtube = request.accessTokenObject.accessToken;
+                            setGoogleAccessToken(request.accessTokenObject.accessToken);
                             changeCurrentState({path : 'youtube'});
                             //importYoutubePlaylists(request.accessTokenObject.accessToken);
 

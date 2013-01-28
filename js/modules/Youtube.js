@@ -41,6 +41,11 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
                 playlist.thumbnail = xml.find('media\\:group').eq(0).find('media\\:thumbnail').eq(0).attr('url');
                 playlist.isPublic = true;
                 playlist.songs = [];
+                var author = xml.find('author').eq(0);
+                playlist.youtubeUser = {
+                    displayName : author.find('name').eq(0).text(),
+                    userId : author.find('yt\\:userId').eq(0).text()
+                };
 
                 /*xml.find('entry').each(function(){
                     var media = $(this).find('media\\:group').eq(0);
@@ -48,7 +53,8 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
                 });*/
 
                 xml.find('entry').each(function(){
-                    playlist.songs.push(new Song(this));
+                    var song = new Song(this);
+                    if(!song.badSong) playlist.songs.push(song);
                 });
 
 

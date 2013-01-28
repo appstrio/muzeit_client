@@ -131,9 +131,13 @@ function MainController($scope,$location,$http,bb) {
         //    if(alertElement)
         //        showAlertOnItem(alertElement,"Song was added to playlist");
         }
-        bb.bg.methods.addSongToPlaylist(song,playlist);
+        bb.bg.methods.addSongToPlaylist(song,playlist,function(){
+            showAlert('Song was added to playlist.');
+        },function(){
+            showAlert('Could not add song to playlist.');
+
+        });
         hideMainDropdown();
-        showAlert('Song was added to playlist');
     };
 
 
@@ -153,14 +157,14 @@ function MainController($scope,$location,$http,bb) {
         newPlaylist.title = newPlaylistTitle;
         newPlaylist.isPublic=true;
         tempStripSongsV(newPlaylist);
-        console.log(JSON.stringify(newPlaylist));
         bb.bg.methods.addNewPlaylist(newPlaylist,function(playlist){
             $scope.$apply(function(){
                 $location.path('/playlist/'+playlist._id);
             });
-            showAlert('A new playlist was created.');
+            showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
 
         },function(e){
+            showAlert('Could not create new playlist, please try again.');
             console.error('Error saving new playlist',e);
         });
         hideMainDropdown();
@@ -170,6 +174,7 @@ function MainController($scope,$location,$http,bb) {
     var tempStripSongsV = function(playlist){
         for(var i in playlist.songs){
             delete playlist.songs[i].__v;
+            delete playlist.songs[i]['$$hashKey'];
         }
     };
 
@@ -184,17 +189,19 @@ function MainController($scope,$location,$http,bb) {
                 if(song){
                     bb.bg.methods.addSongToPlaylist(song,playlist,function(){
                         $location.path('/playlist/'+playlist._id);
+                        showAlert('A new playlist was created and a song was added.');
                     },function(error){
+                        showAlert('Could not add song to playlist.');
                         console.error('Error adding song to playlist');
                     });
                 }else{
                     $location.path('/playlist/'+playlist._id);
                 }
-                showAlert('A new playlist was created.');
 
             });
 
         },function(e){
+            showAlert('Could not create new playlist, please try again.');
             console.error('Error saving new playlist',e);
         });
         $scope.showAddToPlaylistDropDown = false;

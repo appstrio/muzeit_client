@@ -12,15 +12,14 @@
                 <li class="item clearfix" ng-repeat="playlist in playlists" ng-click="goToPlaylist(playlist,$event)">
                     <div class="song-thumbnail" style="background-image:url({{playlistThumbnail(playlist)}})"></div>
                     <!--<img ng-src="{{playlistThumbnail(playlist)}}" alt="" class="otg-label">-->
-                    <h4 class="otg-song-name">{{playlist.title}}</h4>
+                    <h4 class="otg-song-name">{{playlist.title|formatPlaylistTitle}}</h4>
                     <ul class="otg-song-features clearfix">
                         <li>{{playlistOwnerString(playlist)}}</li>
                         <li>{{playlist.songs.length}} songs</li>
                     </ul>
-                    <ul class="otg-social clearfix">
-                        <li class="so_dragg"><a href="">dragg</a></li>
-                        <li class="so_like"><a href="">like</a></li>
-                        <li class="so_share"><a href="">share</a></li>
+                    <ul class="otg-social otg-for-playlists clearfix">
+                        <!--<li class="so_like"><a href="">like</a></li>-->
+                        <!--<li class="so_share"><a href="">share</a></li>-->
                         <li class="so_delete" ng-click="removePlaylist(playlist,$event)"><a href="">delete</a></li>
                     </ul>
                     <span class="before"></span>

@@ -8,6 +8,7 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
     var discoverPlaylist;
     var init=function(){
         $scope.discover = discover.init(function(collection){
+            console.log('$scope.discover',$scope.discover);
             discoverPlaylist = getPlaylist();
             $scope.loading=false;
             if(!$scope.$$phase)$scope.$apply();
@@ -68,7 +69,6 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
     };
 
     $scope.goToUserThumbnail = function(item,e){
-        console.log('item',item);
         e.preventDefault();
         e.stopPropagation();
         if(item.from && item.from.fid || item.from.fId){

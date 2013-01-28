@@ -1,6 +1,8 @@
 function YoutubeController($scope,bb,$location,$routeParams){
     $scope.youtubePlaylists = [];
     $scope.subscriptions=[];
+    $scope.loading=true;
+    $scope.noAccessToken=false;
 
     var accessToken = bb.bg.resources.access_tokens.youtube;
     var retry=false;
@@ -8,10 +10,13 @@ function YoutubeController($scope,bb,$location,$routeParams){
     var init=function(){
         if(accessToken){
             userId = $routeParams.userId || null;
-            console.log('userId',userId);
             bb.bg.resources.youtube.getYoutubePlaylistFeed(accessToken,userId).success(function(data){
                 var xml = $(data);
                 $scope.title = xml.find('title').eq(0).text();
+                var displayName = xml.find('author').eq(0).find('name').eq(0).text();
+                if(displayName) $scope.title = "Playlists of " + displayName;
+
+
                 xml.find('entry').each(function(index,elm){
                     var playlist = {};
                     playlist.title = $(this).find('title').eq(0).text();
@@ -20,23 +25,23 @@ function YoutubeController($scope,bb,$location,$routeParams){
                     playlist.playlistId =  $(this).find('yt\\:playlistId').eq(0).text();
                     $scope.youtubePlaylists.push(playlist);
                 });
-                console.log('$scope.youtubePlaylists',$scope.youtubePlaylists);
                 if(!userId){
                     getSubscriptions();
                     $scope.title = "My YouTube";
                 }
-
+                $scope.loading=false;
                 if(!$scope.$$phase) $scope.$apply();
-            }).error(function(err){
-                    if(err.status == 401 || err.statusCode == 401){
-                        if(!retry) handle401Error();
+            }).error(function(err,status){
+                    console.error("Error getting playlists from youtube",err,status);
+                    if(status == 401){
+                        if(!retry) getAccessToken();
                     }else{
                         noAccessToken();
                     }
             });
 
         }else{
-            noAccessToken();
+            getAccessToken();
         }
 
     };
@@ -58,11 +63,14 @@ function YoutubeController($scope,bb,$location,$routeParams){
 
     };
 
-    var handle401Error = function(){
+    var getAccessToken = function(){
         bb.bg.resources.account.refreshGoogleAccessToken().success(function(response){
-            if(response.access_token){
+            console.log(response);
+
+            if(response.accessToken){
                 retry=true;
-                accessToken = response.access_token;
+                accessToken = response.accessToken;
+                bb.bg.methods.setGoogleAccessToken(response.accessToken);
                 init();
             }else{
                 noAccessToken();
@@ -73,7 +81,8 @@ function YoutubeController($scope,bb,$location,$routeParams){
     };
 
     var noAccessToken = function(){
-
+        $scope.noAccessToken=true;
+        $scope.loading=false;
     };
     init();
 
@@ -86,4 +95,8 @@ function YoutubeController($scope,bb,$location,$routeParams){
         $location.path('youtube/'+user.userId);
     };
 
+    $scope.connectYoutube = function(e){
+        e.preventDefault();
+        $scope.connectGoogle();
+    };
 };

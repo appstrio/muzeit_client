@@ -62,7 +62,8 @@ function SearchController($scope,$http,bb,$location) {
             transformResponse : function(data) {
                 var tempArr=[];
                 $(data).find('entry').each(function(){
-                    tempArr.push(new Song(this));
+                    var song = new Song(this);
+                    if(!song.badSong) tempArr.push(song);
                 });
                 data=null;
                 return tempArr;

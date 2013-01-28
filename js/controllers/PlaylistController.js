@@ -77,8 +77,6 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
 
     };
 
-    $scope.allToNewPlaylistTitle = "hadar";
-
     $scope.addAllToNewPlaylistKeyPress = function(e){
         if(e.keyCode == 13){
             $scope.addAllToNewPlaylist($scope.playlist,$scope.allToNewPlaylistTitle);
@@ -95,20 +93,19 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     };
 
     $scope.isOnTheGo = function(){
-
         return ($scope.playlist && $scope.playlist.title && $scope.playlist.title == "<on-the-go>");
     };
 
     $scope.showPlaylistHeader = function(){
-        return ($scope.playlist && $scope.playlist.title && $scope.playlist.title != "<on-the-go>" && $scope.playlist.title != "On The Go" && $scope.playlist.title != "recent" && $scope.playlist.title != "Recent");
+        return ($scope.playlist && $scope.playlist.title  && $scope.playlist.title != "recent" && $scope.playlist.title != "Recent");
     };
 
     $scope.showAddAllDropDown = function(){
-         return !$scope.showPlaylistHeader();
+         return !$scope.showPlaylistHeader()||$scope.isOnTheGo();
     };
 
     $scope.showAddToPlaylistDropDown = function(){
-        return !$scope.showPlaylistHeader();
+        return !$scope.showPlaylistHeader() || $scope.isOnTheGo();
     };
 
     $scope.showUnsubscribeButton = function(){

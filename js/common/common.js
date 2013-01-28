@@ -31,6 +31,7 @@ Song.prototype.parseXML = function (xml){
 	this.thumbnail		 = media.find('media\\:thumbnail').eq(0).attr('url');
     this.views =  $(xml).find('yt\\:statistics').eq(0).attr('viewCount');
     this.duration =  parseInt(media.find('media\\:content').eq(0).attr('duration'));
+    if(!this.duration || isNaN(this.duration)) this.badSong = true;
 };
 
 
