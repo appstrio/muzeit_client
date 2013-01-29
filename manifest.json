@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Muzeit - Music Player for Chrome™(Beta)",
+  "name": "Muzeit Beta - Social Music Player ",
   "description" : "The best Youtube experience for Google Chrome!",
-  "version": "0.0.0.36",
+  "version": "0.0.0.45",
    "background": {
 	  "page" : "background.html",
       "persistent": false
@@ -10,7 +10,7 @@
 	
 	"browser_action": {
     "default_icon": "img/icon/icon19.png",
-    "default_title": "Chrome Player Title",
+    "default_title": "Muzeit",
     "default_popup": "popup.html"
   },
     "content_scripts": [
@@ -21,20 +21,20 @@
             "all_frames" : true
         },
         {
-            "matches": ["http://music-player-server.herokuapp.com/v1/auth/facebook/oauth/*"],
+            "matches": ["https://www.muzeit.net/v1/auth/facebook/oauth/*","http://www.muzeit.net/v1/auth/facebook/oauth/*"],
             "js": ["js/content_scripts/auth.js"],
             "run_at" : "document_end",
             "all_frames" : true
         },
         {
-            "matches": ["http://music-player-server.herokuapp.com/v1/auth/google/oauth/*"],
+            "matches": ["https://www.muzeit.net/v1/auth/google/oauth/*","http://www.muzeit.net/v1/auth/google/oauth/*"],
             "js": ["js/content_scripts/auth.youtube.js"],
             "run_at" : "document_end",
             "all_frames" : true
         }
 
     ],
-    "content_security_policy": "script-src 'self' https://s.ytimg.com https://www.youtube.com https://www.google.com https://ajax.googleapis.com; object-src 'self' https://www.youtube.com ",
+    "content_security_policy": "script-src 'self' https://s.ytimg.com https://www.youtube.com https://www.google.com https://ssl.google-analytics.com https://ajax.googleapis.com; object-src 'self' https://www.youtube.com ",
 
  	"permissions": [
   		"tabs",
@@ -42,6 +42,7 @@
 		"<all_urls>",
         "storage"
 		],
-    "default_locale" : "en"
+    "default_locale" : "en",
+    "web_accessible_resources": ["success.html"]
 }
 

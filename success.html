@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" ng-csp>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Muzeit</title>
+    <link rel="icon" href="/img/icon/icon32.png" type="image/png" />
+
+
+
+</head>
+<body style="background:#333;font-family: Helvetica Neue, sans-serif;color:white;">
+<div id="header">
+    <center>
+        <img src="img/muzeit.logo122x101.png">
+        <h2> You have Successfully connected with Muzeit.</h2>
+        <h3> Re-open Muzeit and start playing!</h3>
+        <h4 id="timer"></h4>
+    </center>
+</div>
+<script>
+    var timer=0;
+    var timeout = 10;
+    var elm = document.getElementById('timer');
+    setInterval(function(){
+       timer++;
+        elm.innerText = "This window will automatically be closed in " + timeout - timer + "seconds...";
+        if(timer >= timeout){
+            window.close();
+        }
+    },1000);
+</script>
+</body>
+</html>

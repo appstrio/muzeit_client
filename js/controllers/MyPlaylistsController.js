@@ -35,9 +35,16 @@ function MyPlaylistsController($scope,$location,bb,$location) {
         });
     };
 
-}
+    $scope.showRemovePlaylistButton = function(playlist){
+        return (playlist.title != "<on-the-go>" && playlist.title != "On The Go");
+    };
+
+    $scope.trackEvent('playlists_controller');
+};
 
 
+
+MyPlaylistsController.$inject = ['$scope','$location','bb','$location'];
 
 
 

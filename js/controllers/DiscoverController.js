@@ -14,6 +14,8 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
             if(!$scope.$$phase)$scope.$apply();
 
         });
+
+        $scope.trackEvent('discover_controller');
     };
 
     $scope.loadMore = function(e){
@@ -84,6 +86,11 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
         }
     };
 
+    $scope.import = function(playlist,e){
+        e.preventDefault();
+        e.stopPropagation();
+        $scope.addAllToNewPlaylist(playlist,playlist.title);
+    };
 
     var getPlaylist = function(){
       var songs = [];
@@ -104,6 +111,9 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
 
 
 };
+
+
+DiscoverController.$inject = ['$scope','$http','config','bb','discover','$location','$window'];
 
 
 

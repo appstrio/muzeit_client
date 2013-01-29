@@ -26,7 +26,7 @@
                 <div class="pl-info">
                     <div class="pl-thumbnail" style="float:left;width:32px;height:32px;margin-right:7px;" ng-show="playlist.thumbnail"><img  style="width:32px;height:32px;" ng-src="{{playlist.thumbnail}}"/></div>
                     <h2 class="pl-title">{{playlist.title|formatPlaylistTitle}}</h2>
-                    <h3 class="pl-author" ng-show="playlist.youtubeUser"><a href="" style="text-decoration: none;color:white;" ng-click="goToYoutubeUser(playlist.youtubeUser,$event)">{{playlist.youtubeUser.displayName}} </a></h3>
+                    <h3 class="pl-author" ng-show="playlist.youtubeUser"><a href="" class="from-fb-user" ng-click="goToYoutubeUser(playlist.youtubeUser,$event)">{{playlist.youtubeUser.displayName}} </a></h3>
                     <ul class="pl-features">
                         <!--<li>2 new shares </li>-->
                         <!--<li>1 new like</li>-->
@@ -46,8 +46,8 @@
                         <li ng-show="song.views">{{song.views|number}}  Views</li>
                     </ul>
                     <ul class="otg-social otg-for-discover clearfix">
-                        <li class="so_like"><a href="">like</a></li>
-                        <li class="so_share"><a href="">share</a></li>
+                        <li class="so_like"><a href=""  ng-click="likeSong(song,$event)">like</a></li>
+                        <li class="so_share"><a href=""  ng-click="shareSong(song,$event)">share</a></li>
                         <li class="so_add">
                             <a href="" class="opener" ng-click="openAddToPlaylistWindow($event)">Add to playlist</a>
                             <div class="drop-body">

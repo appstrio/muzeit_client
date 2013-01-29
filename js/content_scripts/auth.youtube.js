@@ -6,7 +6,11 @@ var accessToken = JSON.parse(bodyText);
 console.log('accessToken',accessToken);
 chrome.extension.sendMessage({to: "everyone", type : "auth", message : "success", provider : "youtube", accessTokenObject : accessToken}, function(response) {
     // close this window after getting response back from the background page
-    if (response.close) window.close();
+    //if (response.close) window.close();
 });
 
-document.getElementsByTagName('body')[0].innerHTML = "Connected, please re-open music player !";
+document.location.href=chrome.extension.getURL('success.html');
+
+setTimeout(function(){
+    window.close();
+},1000*10);

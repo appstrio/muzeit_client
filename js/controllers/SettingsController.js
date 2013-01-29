@@ -8,4 +8,9 @@ function SettingsController($scope,bb,$location){
 
         }
     };
+
+    $scope.trackEvent('settings_controller');
+
 };
+
+SettingsController.$inject = ['$scope','bb','$location'];

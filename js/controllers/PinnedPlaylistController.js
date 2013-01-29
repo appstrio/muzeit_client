@@ -49,3 +49,7 @@ function PinnedPlaylistController ($scope,bb,$routeParams,$location,discover){
         return $scope.showPlaylistHeader();
     };
 };
+
+
+
+PinnedPlaylistController.$inject = ['$scope','bb','$routeParams','$location','discover'];

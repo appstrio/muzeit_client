@@ -57,7 +57,6 @@ function YoutubeController($scope,bb,$location,$routeParams){
                 user.userId =  $(this).find('yt\\:username').eq(0).text();
                 $scope.subscriptions.push(user);
             });
-            console.log('$scope.subscriptions',$scope.subscriptions);
             $scope.$apply();
         });
 
@@ -65,8 +64,6 @@ function YoutubeController($scope,bb,$location,$routeParams){
 
     var getAccessToken = function(){
         bb.bg.resources.account.refreshGoogleAccessToken().success(function(response){
-            console.log(response);
-
             if(response.accessToken){
                 retry=true;
                 accessToken = response.accessToken;
@@ -83,6 +80,7 @@ function YoutubeController($scope,bb,$location,$routeParams){
     var noAccessToken = function(){
         $scope.noAccessToken=true;
         $scope.loading=false;
+        if(!$scope.$$phase)$scope.$apply();
     };
     init();
 
@@ -99,4 +97,10 @@ function YoutubeController($scope,bb,$location,$routeParams){
         e.preventDefault();
         $scope.connectGoogle();
     };
+
+    $scope.trackEvent('youtube_controller');
+
 };
+
+
+YoutubeController.$inject = ['$scope','bb','$location','$routeParams'];

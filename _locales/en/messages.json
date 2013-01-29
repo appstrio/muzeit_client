@@ -1,9 +1,9 @@
 {
     "baseURL" : {
-        "message" : "http://music-player-server.herokuapp.com/v1/"
+        "message" : "http://www.muzeit.net/v1/"
     },
     "baseAuthURL" : {
-        "message" : "http://music-player-server.herokuapp.com/auth/*"
+        "message" : "https://www.muzeit.net/v1/auth/*"
     }
 
 }

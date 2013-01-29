@@ -5,6 +5,7 @@ function DebugController($scope,bb) {
 
 };
 
+DebugController.$inject = ['$scope', 'bb'];
 
 
 

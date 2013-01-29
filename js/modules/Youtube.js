@@ -6,11 +6,12 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
     var basePlaylistPath = "playlists";
     var baseSubscriptionsPath = "users/default/subscriptions";
 
-    var buildUrl = function(path,params){
+    var buildUrl = function(path,params,maxResults){
         var url = baseUrl + path + "?v=2";
         for (var i in params){
             url += "&" + i + "=" + params[i];
         }
+        if(maxResults) url += "&max-results="+maxResults;
         return url;
     };
 
@@ -31,7 +32,7 @@ youtubeModule.service('youtube', ['$q','$rootScope','$http', function($q,$rootSc
     };
 
     var getYoutubePlaylist = function(playlistId,accessToken){
-        var url = buildUrl(basePlaylistPath+"/"+playlistId,{access_token : accessToken});
+        var url = buildUrl(basePlaylistPath+"/"+playlistId,{access_token : accessToken},50);
         return $http.get(url,{
             transformResponse : function(data) {
                 var xml = $(data);

@@ -1,4 +1,4 @@
-angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageModule'], function($routeProvider, $locationProvider) {
+angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageModule'], ['$routeProvider', '$locationProvider',function($routeProvider, $locationProvider) {
     var bbDelay = {
         // I will cause a 1 second delay
         delay: function(bb) {
@@ -14,7 +14,7 @@ angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageMo
         resolve: bbDelay
     });
 
-}).run(function(bb,$location,$rootScope){
+}]).run(['bb','$location','$rootScope',function(bb,$location,$rootScope){
         bb.init(function(){
             if(bb.bg.currentState && bb.bg.currentState.path){
                 $rootScope.$apply(function(){
@@ -47,6 +47,6 @@ angular.module('pinnedPlayerApp', ['bb','config','filters','discover','StorageMo
 
 
 
-    });
+    }]);
 
 

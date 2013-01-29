@@ -101,3 +101,6 @@ function PinnedController($scope,$location,bb,$rootScope) {
         });
 
 };
+
+
+PinnedController.$inject = ['$scope','$location','bb','$rootScope'];

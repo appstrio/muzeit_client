@@ -37,7 +37,7 @@ var deps = {
     ConfigModule: '/js/Modules/Config.js',
     DiscoverModule: '/js/Modules/Discover.js',
     YoutubeModule: '/js/Modules/Youtube.js',
-
+    GA           : '/js/Modules/GA.js',
 
 
 

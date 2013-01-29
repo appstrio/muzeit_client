@@ -8,7 +8,6 @@
 
     <div class="otg-body">
         <div class="otg-content scrollable">
-            <div ng-show="loading"><img src="/img/loader.gif"/> Loading...<span ng-show="!discover.data || discover.data.length == 0"><br/>Please wait...It may take a few minutes</span></div>
             <ul class="otg-list">
                 <li class="item clearfix"  ng-repeat="item in discover.data" ng-click="renderItem(item)" ng-class="{active : isItemPlaying(item)}" ng-switch on="item.itemType">
                     <div ng-switch-when="song">
@@ -23,8 +22,8 @@
                             <li>{{item.data.itemType}}</li>
                         </ul>
                         <ul class="otg-social otg-for-discover clearfix">
-                            <li class="so_like"><a href="">like</a></li>
-                            <li class="so_share"><a href="">share</a></li>
+                            <li class="so_like"><a href="" ng-click="likeSong(item.data,$event)">like</a></li>
+                            <li class="so_share"><a href="" ng-click="shareSong(item.data,$event)">share</a></li>
                             <!--<li class="so_delete" ng-click="removeSong(song,$event)"><a href="">delete</a></li>-->
                             <li class="so_add">
                                 <a href="" class="opener" ng-click="openAddToPlaylistWindow($event)">Add to playlist</a>
@@ -44,17 +43,17 @@
                             <!--<img ng-click="goToUserThumbnail(item,$event)" ng-src="{{item.data.thumbnail}}" alt="{{item.from.displayName}}" class="otg-label">-->
                             <div class="user-thumbnail-box" style="background-image:url({{item.from.thumbnail}});"></div>
                         </div>
-                        <h3 ng-show="item.from" class="otg-user-action"><a href="" ng-click="goToUserThumbnail(item,$event)">{{item.from.name}}</a> has listened to</h3>
+                        <h3 ng-show="item.from" class="otg-user-action"><a href="" ng-click="goToUserThumbnail(item,$event)">{{item.from.name}}</a> {{item.title}}</h3>
                         <h4 class="otg-song-name" style="">{{item.data.title}}</h4>
                         <ul class="otg-song-features clearfix">
                             <li>{{item.data.itemType}}</li>
                         </ul>
                         <ul class="otg-social otg-for-discover clearfix">
-                            <li class="so_like"><a href="">like</a></li>
-                            <li class="so_share"><a href="">share</a></li>
+                            <li class="so_like"><a href=""  ng-click="likePlaylist(item.data,$event)">like</a></li>
+                            <li class="so_share"><a href="" ng-click="sharePlaylist(item.data,$event)">share</a></li>
                             <!--<li class="so_delete" ng-click="removeSong(song,$event)"><a href="">delete</a></li>-->
                             <li class="so_subscribe">
-                                <a href="">Subscribe</a>
+                                <a href="" ng-click="import(item.data,$event)">Import</a>
                             </li>
                         </ul>
                         <span class="before"></span>
@@ -63,6 +62,7 @@
 
             </ul>
             <div style="text-align:center;min-height:30px;" >
+                <div ng-show="loading"><img src="/img/loader.gif"/> Loading...<span ng-show="!discover.data || discover.data.length == 0"><br/>Please wait...It may take a few minutes</span></div>
                 <a href="" style="color:white;text-decoration: none;" ng-click="loadMore($event)" ng-show="loadMoreStatus == 'Load More'">{{loadMoreStatus}}</a>
                 <a href="" ng-show="loadMoreStatus == 'Loading...'" style="color:white;text-decoration: none;"><img src="/img/loader.gif">  {{loadMoreStatus}}</a>
             </div>

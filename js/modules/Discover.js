@@ -68,7 +68,6 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
 
 
     var getServer = function(success,error){
-        var defer = $q.defer();
         var songsPromise =  $http.get(config.baseUrl + config.paths.discover).success(function(response){
             applyObjectToResource(collection.data,response);
             if(collection.data.length >= maxSize)collection.data.splice(0,maxSize);
@@ -85,6 +84,25 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
 
         $q.all([songsPromise],function(array){
             (success||angular.noop)(array);
+        },function(errArray){
+            (error||angular.noop)(errArray);
+        });
+    };
+
+    var firstTime = function(){
+        var songsPromise =  $http.get(config.baseUrl + config.paths.discoverFirstTime).success(function(response){
+            applyObjectToResource(collection.data,response);
+            if(collection.data.length >= maxSize)collection.data.splice(0,maxSize);
+            //removeDuplicates();  TODO
+            storeLocal();
+            response.length=0;
+            response=null;
+        }).error(function(err){
+                (error||angular.noop)(err);
+                console.error('Error getting discover ',err);
+        });
+
+        $q.all([songsPromise],function(array){
         },function(errArray){
             (error||angular.noop)(errArray);
         });
@@ -159,7 +177,8 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
         loadMore : loadMore,
         getLocal : getLocal,
         getServer : getServer,
-        getFacebookUserPlaylist :  getFacebookUserPlaylist
+        getFacebookUserPlaylist :  getFacebookUserPlaylist,
+        firstTime : firstTime
     }
 }]);
 

@@ -12,5 +12,8 @@ function RecentController ($scope){
         }
     };
 
+    $scope.trackEvent('recent_controller');
 
 };
+
+RecentController.$inject = ['$scope'];

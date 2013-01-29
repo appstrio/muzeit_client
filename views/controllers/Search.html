@@ -35,8 +35,7 @@
                 <div class="drop-body">
                     <a href="" class="create-new-btn ellipsis"><input type="text" class="create-new-input" placeholder="Create new playlist" on-key-up="addToNewPlaylistKeyPress($event,song)"/></a>
                     <ul class="drop-list">
-                        <li class="ellipsis" ng-click="addSongToPlaylist(song,'on-the-go',$event)"><a href="">On The Go</a></li>
-                        <li class="ellipsis" ng-repeat="playlist in playlists" ng-click="addSongToPlaylist(song,playlist,$event)"><a href="">{{playlist.title}}</a></li>
+                        <li class="ellipsis" ng-repeat="playlist in playlists" ng-click="addSongToPlaylist(song,playlist,$event)"><a href="">{{playlist.title|formatPlaylistTitle}}</a></li>
                     </ul>
                 </div>
             </li>

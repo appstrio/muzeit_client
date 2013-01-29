@@ -6,7 +6,7 @@
             <input type="text" class="pl-search-input" placeholder="Search..." ng-model="searchInput" ng-click="switchToSearch()">
         </form>
         <a href="" class="pl-unsubscribe-btn" ng-show="showUnsubscribeButton()">Unsubscribe</a>
-        <a href="" class="pl-unsubscribe-btn" ng-show="showSubscribeButton()">Subscribe</a>
+        <a href="" class="pl-unsubscribe-btn" ng-show="showSubscribeButton()" ng-click="import()">Import</a>
 
         <div class="dropdown" ng-show="showAddAllDropDown()">
             <a href="" class="pl-unsubscribe-btn"  ng-click="openAddAllToPlaylistWindow($event)">Add All</a>
@@ -28,10 +28,10 @@
                 <div class="pl-info">
                     <div class="pl-thumbnail" style="float:left;width:32px;height:32px;margin-right:7px;" ng-show="playlist.thumbnail"><img  style="width:32px;height:32px;" ng-src="{{playlist.thumbnail}}"/></div>
                     <h2 class="pl-title">{{playlist.title|formatPlaylistTitle}}</h2>
-                    <h3 class="pl-author">{{owner(playlist)}} </h3>
+                    <h3 class="pl-author" ng-show="playlist.from"> <a href="" class="from-fb-user" ng-click="goToUser(playlist.from,$event)">By {{playlist.from.name}} </a></h3>
                     <ul class="pl-features">
                         <!--<li>2 new shares </li>-->
-                        <!--<li>1 new like</li>-->
+                        <!--<li><a href="" ng-click="likePlaylist(playlist,$event)" style="text-decoration: none;color:white;">Like this playlist</a></li>-->
                     </ul>
                 </div>
             </div>
@@ -49,8 +49,8 @@
                     </ul>
                     <ul class="otg-social clearfix">
                         <li class="so_dragg"><a href="">dragg</a></li>
-                        <li class="so_like"><a href="">like</a></li>
-                        <li class="so_share"><a href="">share</a></li>
+                        <li class="so_like"><a href=""  ng-click="likeSong(song,$event)">like</a></li>
+                        <li class="so_share"><a href="" ng-click="shareSong(song,$event)">share</a></li>
                         <li class="so_delete" ng-click="removeSong(song,playlist,$event)"><a href="">delete</a></li>
                         <li class="so_add" ng-show="showAddToPlaylistDropDown()">
                             <a href="" class="opener" ng-click="openAddToPlaylistWindow($event)">Add to playlist</a>

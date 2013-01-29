@@ -1,9 +1,10 @@
-function MainController($scope,$location,$http,bb) {
+function MainController($scope,$location,$http,bb,config) {
     $scope.bb=bb.bg;
     $scope.loading=true;
     $scope.alert={};
 
     var currentState;
+    var baseUrl = config.baseUrl;
 
     var init = function(){
         //start
@@ -14,12 +15,17 @@ function MainController($scope,$location,$http,bb) {
             $scope.recent = bb.bg.resources.recent.get();
             $scope.playlists = bb.bg.playlists();
         }
+        $scope.ga = bb.bg.resources.ga;
         $scope.loading = false;
         $scope.$apply();
     };
 
 
-
+    $scope.trackEvent = function(category,action,label,value){
+        if($scope.ga){
+            $scope.ga.trackEvent(category,action,label,value);
+        }
+    };
 
     bb.init(function(promise){
         if(promise.ready){
@@ -59,8 +65,9 @@ function MainController($scope,$location,$http,bb) {
     $scope.showWelcomeScreen = function(){
       return (!$scope.loading && !$scope.isConnected());
     };
+
     $scope.isConnected = function(){
-      return $scope.user && $scope.user._id;
+      return bb.bg.methods.isConnected();
     };
 
     $scope.$on('$routeChangeSuccess', function(){
@@ -99,14 +106,19 @@ function MainController($scope,$location,$http,bb) {
         bb.bg.methods.connectGoogle();
     };
 
-
     $scope.logout = function(){
+        $scope.loading=true;
         bb.bg.methods.logout().then(function(){
-            $scope.$apply(function(){
-                $scope.user=bb.bg.user();
-            });
+            $location.path('');
+            init();
+            if(!$scope.$$phase)$scope.$apply();
         });
+        if(!$scope.$$phase)$scope.$apply();
+        return false;
+
     };
+
+
 
 
     $scope.isSongActive = function(song){
@@ -281,6 +293,58 @@ function MainController($scope,$location,$http,bb) {
         init();
     };
 
+    $scope.sharePlaylist = function(playlist,e){
+        if(e){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if(!playlist || !playlist._id)return;
+        $http.post(baseUrl + config.paths.playlists + "/" + playlist._id + "/share").success(function(){
+            showAlert("The playlist has been shared to your Facebook.");
+        }).error(function(){
+            showAlert("Error sharing a playlist.");
+        });
+    };
+
+    $scope.likePlaylist = function(playlist,e){
+        if(e){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if(!playlist || !playlist._id)return;
+        $http.post(baseUrl + config.paths.playlists + "/" + playlist._id + "/like").success(function(){
+            showAlert("You liked the playlist on Facebook.");
+        }).error(function(){
+                showAlert("Error like a playlist.");
+        });
+    };
+
+    $scope.shareSong = function(song,e){
+        if(e){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if(!song || !song.youtubeId)return;
+        $http.post(baseUrl + config.paths.playlists + "/" + song.youtubeId + "/share").success(function(){
+            showAlert("The song has been shared to your Facebook.");
+        }).error(function(){
+                showAlert("Error sharing a song.");
+            });
+    };
+
+    $scope.likeSong = function(song,e){
+        if(e){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if(!song || !song.youtubeId)return;
+        $http.post(baseUrl + config.paths.playlists + "/" + song.youtubeId + "/like").success(function(){
+            showAlert("You liked the song on Facebook.");
+        }).error(function(){
+                showAlert("Error liking a song.");
+        });
+    };
+
     // listen to message passing
     $( ".vc_pointer" ).draggable({ containment: "parent", scroll: false, axis: "y" ,
         drag: function() {
@@ -297,3 +361,8 @@ function MainController($scope,$location,$http,bb) {
 
 
 };
+
+
+
+MainController.$inject = ['$scope','$location','$http','bb','config'];
+

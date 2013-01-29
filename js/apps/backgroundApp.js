@@ -1,22 +1,59 @@
-angular.module('backgroundApp', ['ngResource','config','syncedResource','playlist','account','StorageModule','recent','youtube'], function($routeProvider, $locationProvider) {
-}).run(['config','account','$window','$resource','storage','$http','recent','$q','$rootScope','youtube',function(config,account,$window,$resource,storage,$http,recent,$q,$rootScope,youtube){
-    var playlists,
-        currentState={},
+angular.module('backgroundApp', ['ngResource','config','syncedResource','playlist','account','StorageModule','recent','youtube','discover','ga'], function() {
+}).run(['config','account','$window','$resource','storage','$http','recent','$q','$rootScope','youtube','discover','ga',function(config,account,$window,$resource,storage,$http,recent,$q,$rootScope,youtube,discover,ga){
+
+    var currentState        = {},
+        isReady             = false,
+        lastSearch          = {},
+        access_tokens       = {},
+        playlists,
         popupPort,
         pinnedPort,
-        isReady = false,
         readyDefer,
         user,
         onTheGo,
-        playlists,
-        friends,
-        _friends,
-        lastSearch={},
-        access_tokens={};
+        _friends;
 
 
     var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
     var friends = $resource(config.baseUrl + config.paths.friends);
+
+    var init = function(){
+        isReady=false;
+        if(!readyDefer) readyDefer = $q.defer();
+
+        account.init(function(remoteAccount){
+            user = remoteAccount;
+            //success
+            if(user.ownedPlaylists)getAllPlaylists(user.ownedPlaylists);
+            if(user.onTheGo)getOnTheGo(user.onTheGo._id);
+            isReady=true;
+            _friends = friends.query();
+            readyDefer.resolve(remoteAccount);
+            discover.firstTime();
+        },function(err){
+            //error
+            console.error('Getting remote account failed;',err);
+            // no user, reset on the go anyway
+            isReady=true;
+            readyDefer.reject(err);
+        });
+    };
+
+
+    var checkFirstRun = function(){
+        var v = config.getBuildVersion();
+        if(!localStorage.getItem('installTime')){
+            ga.trackEvent('new_install',v);
+            localStorage.setItem('installTime',new Date().getTime());
+            localStorage.setItem('install_version',v);
+
+        }else if (localStorage.getItem('install_version') != v){
+            localStorage.setItem('installTime',new Date().getTime());
+            localStorage.setItem('install_version',v);
+            ga.trackEvent('install_update',v);
+        }
+    };
+
 
     var getPlaylist = function(id,success,error){
         if (playlists){
@@ -161,12 +198,14 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var logout = function(){
-        return $http({method : 'get', url : config.baseUrl + config.paths.logout}).success(function(){
+        return account.logout().then(function(){
+            access_tokens=null;
+            access_tokens={};
 
-          init();
-      }).error(function(e){
-          console.error('logout failed',e);
-      });
+            user=null;
+            init();
+            if(!$rootScope.$$phase)$rootScope.$apply();
+        });
     };
 
     var removeSongFromPlaylist = function(song,holderPlaylist){
@@ -186,11 +225,13 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var addSongToPlaylist = function(song,destPlaylist,success,error){
+        var newSong = temporaryStripSongBeforeSend(song);
+        console.log('newSong',angular.toJson(newSong));
         if(destPlaylist == "onthego" || destPlaylist.title == "<on-the-go>"){
-            onTheGo.songs.push(song);
+            onTheGo.songs.push(newSong);
             storeLocal('onTheGo',onTheGo);
             if(onTheGo._id){
-                playlist.save({_id : onTheGo._id, action : 'songs'},temporaryStripSongBeforeSend(song),function(response){
+                playlist.save({_id : onTheGo._id, action : 'songs'},newSong,function(response){
                     (success||angular.noop)(response);
                 },function(e){
                     (error||angular.noop)(e);
@@ -198,10 +239,10 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                 });
             }
         }else{
-            destPlaylist.songs.push(song);
+            destPlaylist.songs.push(newSong);
             storeLocal('playlists',playlists);
             if(destPlaylist._id){
-                playlist.save({_id : destPlaylist._id, action : 'songs'},temporaryStripSongBeforeSend(song),function(response){
+                playlist.save({_id : destPlaylist._id, action : 'songs'},newSong,function(response){
                 },function(e){
                     console.error(e);
                 });
@@ -212,8 +253,15 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var temporaryStripSongBeforeSend = function(song){
-        var newSong = angular.extend({},song);
+        /*var newSong = angular.extend({},song);
         delete newSong.views;
+        delete newSong._id;
+        delete newSong.__v;*/
+        var newSong={};
+        newSong.youtubeId = song.youtubeId;
+        newSong.thumbnail = song.thumbnail;
+        newSong.title = song.title;
+        newSong.duration = song.duration;
         return newSong;
     };
 
@@ -234,85 +282,9 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
         access_tokens.youtube = accessToken;
     };
 
-
-    var exports={
-        resources :{
-            account : account,
-            playlist : playlist,
-            recent : recent,
-            youtube : youtube,
-            access_tokens : access_tokens
-        },
-        methods: {
-            getPlaylist : getPlaylist,
-            addNewPlaylist : addNewPlaylist,
-            changeCurrentState : changeCurrentState,
-            togglePlay : togglePlay,
-            stop : stop,
-            playPreviousSong : playPreviousSong,
-            playNextSong : playNextSong,
-            connectFacebook : connectFacebook,
-            connectGoogle : connectGoogle,
-            removeSongFromPlaylist : removeSongFromPlaylist,
-            addSongToPlaylist : addSongToPlaylist,
-            logout : logout,
-            setNewVolume : setNewVolume,
-            setGoogleAccessToken : setGoogleAccessToken
-        },
-        currentState : currentState,
-        isReady : function(){
-            return isReady;
-        },
-        readyDefer : function(){
-            return readyDefer;
-        },
-        user : function (){
-            return user;
-        },
-        onTheGo : function(){
-            return onTheGo;
-        },
-        playlists : function(){
-          return playlists;
-        },
-        friends : function(){
-          return _friends;
-        },
-
-        isAlive : isAlive,
-
-        setLastSearch : function(lastSearchObject){
-           angular.extend(lastSearch,lastSearchObject);
-        },
-
-        getLastSearch : function(){
-            return lastSearch;
-        }
-
-
-    };
-
-
-    var init = function(){
-        isReady=false;
-        if(!readyDefer) readyDefer = $q.defer();
-
-        account.init(function(remoteAccount){
-            user = remoteAccount;
-            //success
-            if(user.ownedPlaylists)getAllPlaylists(user.ownedPlaylists);
-            if(user.onTheGo)getOnTheGo(user.onTheGo._id);
-            isReady=true;
-            _friends = friends.query();
-            readyDefer.resolve(remoteAccount);
-
-        },function(err){
-            //error
-            console.error('Getting remote account failed;',err);
-            // no user, reset on the go anyway
-            isReady=true;
-            readyDefer.reject(err);
-        });
+    var isConnected = function(){
+        var _account = account.account();
+      return (_account && _account._id);
     };
 
     var resetPlaylists = function(){
@@ -342,13 +314,13 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     var storeLocal = function(key,data,dirty){
-      var obj ={};
-      obj[key] = {};
-      obj[key].timestamp = new Date().getTime();
-      if(dirty) obj[key].dirty=true;
-      else  obj[key].dirty=false;
-      obj[key].data = data;
-      storage.set(obj);
+        var obj ={};
+        obj[key] = {};
+        obj[key].timestamp = new Date().getTime();
+        if(dirty) obj[key].dirty=true;
+        else  obj[key].dirty=false;
+        obj[key].data = data;
+        storage.set(obj);
     };
 
     var isOld = function(obj,oldTimeout){
@@ -364,25 +336,25 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             }else{
 
                 if(_id){
-                     playlist.get({_id: _id},function(response){
-                         onTheGo = response;
-                         if(object.onTheGo && object.onTheGo.dirty){
-                             angular.extend(onTheGo,object.onTheGo.data);
-                             playlist.put({id : onTheGo._id, action:'songs'},onTheGo.songs,function(response){
-                             },function(err){
-                                 handleHttpErrors(err);
-                                 console.error('Error updating on the go songs list',err);
-                                 storeLocal('onTheGo',onTheGo,true);
-                             });
-                         }
+                    playlist.get({_id: _id},function(response){
+                        onTheGo = response;
+                        if(object.onTheGo && object.onTheGo.dirty){
+                            angular.extend(onTheGo,object.onTheGo.data);
+                            playlist.put({id : onTheGo._id, action:'songs'},onTheGo.songs,function(response){
+                            },function(err){
+                                handleHttpErrors(err);
+                                console.error('Error updating on the go songs list',err);
+                                storeLocal('onTheGo',onTheGo,true);
+                            });
+                        }
                         storeLocal('onTheGo',onTheGo);
-                         playlists.unshift(onTheGo);
-                     },function(err){
+                        playlists.unshift(onTheGo);
+                    },function(err){
                         console.error('Error getting onTheGo',err);
-                         handleHttpErrors(err);
+                        handleHttpErrors(err);
                         //error
                         onTheGo=new playlist({songs : [],title: "<on-the-go>", owner: "me"});
-                     });
+                    });
                 }else{
                     onTheGo=new playlist({songs : [],title: "<on-the-go>", owner: "me"});
                 }
@@ -402,9 +374,67 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     }
 
 
+    var exports={
+        resources :{
+            account                  : account,
+            playlist                 : playlist,
+            recent                   : recent,
+            youtube                  : youtube,
+            ga                       : ga,
+            access_tokens            : access_tokens
+        },
+        methods: {
+            getPlaylist              : getPlaylist,
+            addNewPlaylist           : addNewPlaylist,
+            changeCurrentState       : changeCurrentState,
+            togglePlay               : togglePlay,
+            stop                     : stop,
+            playPreviousSong         : playPreviousSong,
+            playNextSong             : playNextSong,
+            connectFacebook          : connectFacebook,
+            connectGoogle            : connectGoogle,
+            removeSongFromPlaylist   : removeSongFromPlaylist,
+            addSongToPlaylist        : addSongToPlaylist,
+            logout                   : logout,
+            setNewVolume             : setNewVolume,
+            setGoogleAccessToken     : setGoogleAccessToken,
+            isConnected              : isConnected
+        },
+        currentState                 : currentState,
+        isAlive                      : isAlive,
+
+        isReady : function(){
+            return isReady;
+        },
+        readyDefer : function(){
+            return readyDefer;
+        },
+        user : function (){
+            return user;
+        },
+        onTheGo : function(){
+            return onTheGo;
+        },
+        playlists : function(){
+          return playlists;
+        },
+        friends : function(){
+          return _friends;
+        },
+
+        setLastSearch : function(lastSearchObject){
+           angular.extend(lastSearch,lastSearchObject);
+        },
+
+        getLastSearch : function(){
+            return lastSearch;
+        }
+
+
+    };
+
     $rootScope.$on('httpError',handleHttpErrors);
 
-    init();
 
     chrome.extension.onConnect.addListener(function(port) {
       if(port.name == "popup"){
@@ -453,5 +483,8 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
     };
 
     $window.export = exports;
+
+    init();
+    checkFirstRun();
 
 }]);

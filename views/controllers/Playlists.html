@@ -17,9 +17,9 @@
                         <li>{{playlistOwnerString(playlist)}}</li>
                         <li>{{playlist.songs.length}} songs</li>
                     </ul>
-                    <ul class="otg-social otg-for-playlists clearfix">
-                        <!--<li class="so_like"><a href="">like</a></li>-->
-                        <!--<li class="so_share"><a href="">share</a></li>-->
+                    <ul class="otg-social otg-not-dreggable clearfix" ng-show="showRemovePlaylistButton(playlist)">
+                        <li class="so_like"><a href="" ng-click="likePlaylist(playlist,$event)">like</a></li>
+                        <li class="so_share"><a href="" ng-click="sharePlaylist(playlist,$event)">share</a></li>
                         <li class="so_delete" ng-click="removePlaylist(playlist,$event)"><a href="">delete</a></li>
                     </ul>
                     <span class="before"></span>

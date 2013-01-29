@@ -1,4 +1,4 @@
-angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','directives','discover'], function($routeProvider, $locationProvider) {
+angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','directives','discover'], ['$routeProvider', '$locationProvider',function($routeProvider, $locationProvider) {
     var bbDelay = {
         delay: function(bb) {
             var promise = bb.init();
@@ -87,9 +87,9 @@ angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','direc
        resolve: bbDelay
    }).
 
-   otherwise({redirectTo:'/playlist/recent'});
+   otherwise({redirectTo:'/discover'});
 
-}).run(function(bb,$location,$rootScope){
+}]).run(['bb','$location','$rootScope',function(bb,$location,$rootScope){
 
         bb.init(function(){
             if(bb.bg.currentState && bb.bg.currentState.path){
@@ -108,20 +108,4 @@ angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','direc
 
 
 
-    });
-
-/*
-$routeProvider.when('/Book/:bookId', {
-  templateUrl: 'book.html',
-  controller: BookCntl,
-  resolve: {
-    // I will cause a 1 second delay
-    delay: function($q, $timeout) {
-      var delay = $q.defer();
-      $timeout(delay.resolve, 1000);
-      return delay.promise;
-    }
-  }
-});
-
-*/
+}]);

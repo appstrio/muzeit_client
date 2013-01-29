@@ -75,7 +75,7 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
     };
 
     var logout = function(){
-        return $http.get(config.baseUrl + 'logout').success(function(response){
+        return $http({method : 'get', url : config.baseUrl + config.paths.logout}).success(function(){
             account=null;
             storeLocal();
         }).error(function(){

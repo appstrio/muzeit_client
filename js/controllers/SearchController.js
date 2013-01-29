@@ -106,7 +106,14 @@ function SearchController($scope,$http,bb,$location) {
         }
     };
 
+    $scope.trackEvent('search_controller');
+
+
 };
+
+
+SearchController.$inject = ['$scope','$http','bb','$location'];
+
 
 
 

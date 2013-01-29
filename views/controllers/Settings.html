@@ -1,7 +1,7 @@
 
                 <div class="tabs-wrapper" ng-controller="SettingsController">
                     <div class="tab-settings">
-                        <ul class="settings-list">
+                        <ul class="settings-list clearfix">
                             <li class="set_youtube">
                                     <span class="set-img" >
                                       Import your<br>youtube playlists
@@ -16,6 +16,8 @@
                                 <a href="" class="custom-btn" ng-show="user._id" ng-click="logout()">Disconnect</a>
                             </li>
                         </ul>
-                        <a href="#/debug">DEBUG</a>
-                        {{bb.user}}
+                        <div class="clearfix">
+                            <center><a href="" class="custom-btn" style="color:white;" ng-click="logout($event)">Sign Out</a></center>
+                        </div>
+                        <a href="#/debug" style="display:none;">DEBUG</a>
                     </div>

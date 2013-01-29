@@ -14,4 +14,10 @@ function YoutubePlaylistController($scope,bb,$routeParams,$location){
         $location.path('youtube/'+user.userId);
     };
 
+    $scope.trackEvent('youtube_playlist_controller');
+
 };
+
+
+
+YoutubePlaylistController.$inject = ['$scope','bb','$routeParams','$location'];

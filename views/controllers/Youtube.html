@@ -43,10 +43,13 @@
                 </li>
             </ul>
             <div ng-show="loading">
-                <img src="/img/loader.gif">
+               <center> <img src="/img/loader.gif"> </center>
             </div>
             <div ng-show="noAccessToken && !loading">
-                <a href="" ng-click="connectYoutube($event)">Connect With YouTube</a>
+                <center>
+                    <h3>You're not connected to YouTube. Please Connect!</h3>
+                    <a href="" class="custom-btn" ng-click="connectYoutube($event)">Connect</a>
+                </center>
             </div>
 
         </div>

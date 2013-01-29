@@ -5,28 +5,32 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     var init = function(){
         if($routeParams.playlistId == "on-the-go"){
             $scope.playlist = bb.bg.onTheGo();
-            console.log('$scope.playlist',$scope.playlist);
             $scope.loading=false;
+            finishLoadingPlaylist();
         }else if ($routeParams.playlistId == "recent"){
             $scope.playlist = bb.bg.resources.recent.get();
             $scope.loading=false;
             $scope.dontPushToRecent = true;
+            finishLoadingPlaylist();
         }else if($routeParams.playlistId == "search"){
                 $location.path('search');
         }else if ($routeParams.playlistId == "facebookPlaylist"){
             $scope.playlist = discover.getFacebookUserPlaylist($routeParams.fbUserId,function(playlist){
                 $scope.playlist = playlist;
+                finishLoadingPlaylist();
                 $scope.loading=false;
             });
         }else if (!$routeParams.playlistId || $routeParams.playlistId == "current_playlist"){
             $scope.playlist = bb.bg.currentState.playlist;
             $scope.loading=false;
+            finishLoadingPlaylist();
         }else{
             $scope.showPlaylistsNavigation=true;
              bb.bg.methods.getPlaylist($routeParams.playlistId,function(response){
                 $scope.playlist=response;
 
                  $scope.loading=false;
+                 finishLoadingPlaylist();
                 if(!$scope.$$phase) {
                     $scope.$apply();
                 }
@@ -42,6 +46,11 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
         }
 
 
+    };
+
+    var finishLoadingPlaylist = function(){
+        console.log('$scope.playlist',$scope.playlist);
+        $scope.trackEvent('playlist_controller',$scope.playlist.title);
     };
 
     bb.init(function(promise){
@@ -105,6 +114,7 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     };
 
     $scope.showAddToPlaylistDropDown = function(){
+        return true;
         return !$scope.showPlaylistHeader() || $scope.isOnTheGo();
     };
 
@@ -117,9 +127,13 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
         return ($scope.showPlaylistHeader() && $scope.playlist.owner != $scope.myUserId());
     };
 
-
-
-
+    $scope.goToUser = function(from,e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(from && from.fid || from.fId){
+            $location.path('playlist/facebookPlaylist/'+(from.fid||from.fId));
+        }
+    };
 
     $scope.owner = function(playlist){
         return ((playlist.owner == $scope.myUserId()) ? "By me" : "");
@@ -130,5 +144,12 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
             $(".otg-list").sortable();
     };
 
+    $scope.import = function(){
+        $scope.addAllToNewPlaylist($scope.playlist,$scope.playlist.title);
+    };
 
 };
+
+
+
+PlaylistController.$inject = ['$scope','bb','$routeParams','$location','discover'];

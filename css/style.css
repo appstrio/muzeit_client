@@ -97,7 +97,7 @@
     padding-top:5px;
 }
 
-.otg-user-action a{
+.from-fb-user,.otg-user-action a{
     color: #ffda10;
     text-decoration:none;
 }

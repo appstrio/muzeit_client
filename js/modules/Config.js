@@ -5,7 +5,7 @@
     var config = angular.module('config', []);
 
     config.service('config', [function() {
-        var baseUrl = chrome.i18n.getMessage('baseURL') || "http://music-player-server.herokuapp.com/v1/";
+        var baseUrl = chrome.i18n.getMessage('baseURL') || "http://www.muzeit.net/v1/";
 
         var paths = {
             account             : "account",
@@ -16,15 +16,21 @@
             playlists           : "playlists",
             discover            : "discover",
             discoverPlaylists   : "discoverPlaylists",
+            discoverFirstTime   : "discoverFirstTime",
             facebookPlaylist    : "facebookPlaylist",
             friends             : "getfacebookfriends"
 
         };
 
+        var getBuildVersion = function(){
+            return chrome.app.getDetails().version;
+        };
+
         return {
             baseUrl : baseUrl,
             paths : paths,
-            oldTimeout : 1000*5
+            oldTimeout : 1000*5,
+            getBuildVersion : getBuildVersion
         }
     }]);
 
