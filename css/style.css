@@ -111,3 +111,7 @@
 .item-alert{
     position:absolute;top:0;left:0;width:100%;height:100%;background: #f9ffa3;z-index:90000;opacity:1;display:none;
 }
+
+.pl-search.search-discover,.pl-search.search-discover input{
+    height:22px;
+}

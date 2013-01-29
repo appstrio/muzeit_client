@@ -1,16 +1,24 @@
 <!-- !!!!! NEW !!!!!  -->
 <div class="tab-on-the-go">
     <header class="pl-header clearfix otg-header">
-        <form action="" class="pl-search">
+        <form action="" class="pl-search search-discover">
             <input type="text" class="pl-search-input" placeholder="Search..." ng-model="searchInput" ng-click="switchToSearch()">
         </form>
+
+        <ul class="otg-search-option">
+            <li class="so_label">Show:</li>
+            <li ng-class="{active :  !predicate.itemType || predicate.itemType==''}"><a href="" ng-click="predicate.itemType=''">All</a></li>
+            <li ng-class="{active : predicate.itemType=='playlist'}"><a href="" ng-click="predicate.itemType='playlist'">Playlists</a></li>
+            <li ng-class="{active : predicate.itemType=='song'}" ><a href="" ng-click="predicate.itemType='song'">Songs</a></li>
+        </ul>
+
     </header>
 
     <div class="otg-body">
         <div class="otg-content scrollable">
             <ul class="otg-list">
-                <li class="item clearfix"  ng-repeat="item in discover.data" ng-click="renderItem(item)" ng-class="{active : isItemPlaying(item)}" ng-switch on="item.itemType">
-                    <div ng-switch-when="song">
+                <li class="item clearfix"  ng-repeat="item in discover.data|filter:predicate" ng-click="renderItem(item)" ng-class="{active : isItemPlaying(item)}" ng-switch on="item.itemType">
+                    <div ng-switch-when="song" >
                         <div class="discover-thumbnail" style="background-image:url({{item.data.thumbnail}})">
                             <!--item.from.thumbnail||  -->
                             <!--<img ng-click="goToUserThumbnail(item,$event)" ng-src="{{item.data.thumbnail}}" alt="{{item.from.displayName}}" class="otg-label">-->

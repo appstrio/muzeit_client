@@ -69,7 +69,8 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
 
     var getServer = function(success,error){
         var songsPromise =  $http.get(config.baseUrl + config.paths.discover).success(function(response){
-            applyObjectToResource(collection.data,response);
+            var temp = angular.copy(response);
+            applyObjectToResource(collection.data,temp);
             if(collection.data.length >= maxSize)collection.data.splice(0,maxSize);
             //removeDuplicates();  TODO
             collection.timestamp = new Date().getTime();

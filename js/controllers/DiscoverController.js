@@ -8,7 +8,6 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
     var discoverPlaylist;
     var init=function(){
         $scope.discover = discover.init(function(collection){
-            console.log('$scope.discover',$scope.discover);
             discoverPlaylist = getPlaylist();
             $scope.loading=false;
             if(!$scope.$$phase)$scope.$apply();
