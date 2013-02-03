@@ -33,10 +33,13 @@ var deps = {
     RecentController : '/js/controllers/RecentController.js',
     YoutubeController : '/js/controllers/YoutubeController.js',
     YoutubePlaylistController : '/js/controllers/YoutubePlaylistController.js',
+    ProfileController : '/js/controllers/ProfileController.js',
+
 
     ConfigModule: '/js/Modules/Config.js',
     DiscoverModule: '/js/Modules/Discover.js',
     YoutubeModule: '/js/Modules/Youtube.js',
+    Playlists: '/js/Modules/Playlists.js',
     GA           : '/js/Modules/GA.js',
 
 

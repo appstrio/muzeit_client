@@ -15,6 +15,7 @@ var dependencies = [
     deps.DiscoverModule,
     deps.YoutubeController,
     deps.YoutubePlaylistController,
+    deps.ProfileController,
 
     deps.filters,
     deps.directives,

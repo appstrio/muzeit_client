@@ -1,37 +1,26 @@
-function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
+function ProfileByFacebookController($scope,$http,config,bb,discover,$location,$window,$routeParams) {
     $scope.loading=true;
-    $scope.loadMoreStatus = "Load More";
-    $scope.disocverPlaylist = {
-        title : 'Discover'
-    }
+    $scope.profilePlaylist = {};
 
-    var discoverPlaylist;
+    var fbId = $routeParams.fbUserId;
+    var userPlaylist,result;
     var init=function(){
-        $scope.discover = discover.init(function(collection){
-            discoverPlaylist = getPlaylist();
+        if(!fbId)return false;
+         discover.getUserProfileByFacebookId(fbId,function(response){
+            $scope.discover = angular.copy(response);
+            $scope.from = $scope.discover.from;
+            userPlaylist = getPlaylist($scope.discover.data.items,$scope.from);
             $scope.loading=false;
             if(!$scope.$$phase)$scope.$apply();
 
-        });
+        },function(err){
+             $scope.loading=false;
+             $scope.error = "Oh oh seems like the user is not a friend of you or there's a mistake...";
+         });
 
-        $scope.trackEvent('discover_controller');
+        $scope.trackEvent('profile_controller_by_facebook_id',fbId);
     };
 
-    $scope.loadMore = function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        if($scope.loadMoreStatus == "Loading..."){
-            return;
-        }
-        $scope.loadMoreStatus = "Loading...";
-        discover.loadMore(function(){
-            $scope.loadMoreStatus="Load More";
-            if(!$scope.$$phase)$scope.$apply();
-        },function(){
-            $scope.loadMoreStatus="Load More";
-            if(!$scope.$$phase)$scope.$apply();
-        });
-    }
     $scope.addToNewPlaylistKeyPress = function(e,song){
         if(e.keyCode == 13){
             $scope.addSongToNewPlaylist(song,$(e.target).val());
@@ -69,17 +58,9 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
         return ($scope.currentState.song && $scope.currentState.song === item.data);
     };
 
-    $scope.goToUserThumbnail = function(item,e){
-        e.preventDefault();
-        e.stopPropagation();
-        if(item.from && item.from.fid || item.from.fId){
-            $location.path('profile/facebook/'+(item.from.fid||item.from.fId));
-        }
-    };
-
     $scope.renderItem = function(item){
         if(item.itemType == "song"){
-            $scope.selectSong(item.data,discoverPlaylist);
+            $scope.selectSong(item.data,userPlaylist);
         }else if(item.itemType == "playlist"){
             $location.path('playlist/'+item.data._id);
         }
@@ -104,15 +85,15 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
     };
 
 
-    var getPlaylist = function(){
-      var songs = [];
-        for (var i in $scope.discover.data){
-            if($scope.discover.data[i].itemType == 'song'){
-                songs.push($scope.discover.data[i].data);
+    var getPlaylist = function(items,from){
+        var songs = [];
+        for (var i in items){
+            if($scope.items.itemType == 'song'){
+                songs.push(items[i].data);
             }
         }
         return {
-            title : "Discover",
+            title : "All the songs of " + from.name,
             songs : songs
         }
     };
@@ -125,7 +106,7 @@ function DiscoverController($scope,$http,config,bb,discover,$location,$window) {
 };
 
 
-DiscoverController.$inject = ['$scope','$http','config','bb','discover','$location','$window'];
+ProfileByFacebookController.$inject = ['$scope','$http','config','bb','discover','$location','$window','$routeParams'];
 
 
 

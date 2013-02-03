@@ -11,7 +11,6 @@ function SearchController($scope,$http,bb,$location) {
         if(lastSearch.searchIn) $scope.searchIn = lastSearch.searchIn;
     }
 
-    $scope.playlists = bb.bg.playlists();
     $('#searchInput').focus();
 
 	$scope.launch = function (video){
@@ -102,7 +101,7 @@ function SearchController($scope,$http,bb,$location) {
         e.preventDefault();
         e.stopPropagation();
         if(friend.uid){
-            $location.path('playlist/facebookPlaylist/'+friend.uid);
+            $location.path('profile/facebook/'+friend.uid);
         }
     };
 

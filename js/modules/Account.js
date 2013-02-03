@@ -3,7 +3,7 @@ var account = angular.module('account', []);
 account.service('account', ['$http','config','storage','$rootScope',function($http,config,storage,$rootScope) {
 
     var account={};
-    var oldTimeout = 1000 * 60 * 60 * 24;
+    var oldTimeout = 1000 * 60 * 60 * 5;
 
     var init = function(success,error){
         console.info('Init user account.');
@@ -32,7 +32,7 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
             (success||angular.noop)(data);
             chrome.extension.sendMessage({from : 'user.js', request: 'refresh_user'});
             console.info('User account was loaded successfully from remote server.');
-
+            if(!$rootScope.$$phase) $rootScope.$apply();
         }).error(function(err){
                 account=null;
                 account={};
@@ -86,8 +86,36 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
     var clear = function(){
         clearAccount();
         storeLocal();
-        console.log('account after clear',account);
     };
+
+
+    var searchPlaylistInSubscribed = function(playlist){
+        var subscribedPlaylists;
+        if(account.subscribedPlaylists) subscribedPlaylists = account.subscribedPlaylists;
+        if(!subscribedPlaylists) return false;
+
+        for (var i in subscribedPlaylists){
+            if(playlist._id == subscribedPlaylists[i]._id)return i;
+        }
+        return false;
+    };
+
+    var addPlaylistToSubscribedList = function(playlist){
+        var index = searchPlaylistInSubscribed(playlist);
+        if(!index){
+            account.subscribedPlaylists.push({_id : playlist._id});
+            storeLocal();
+        }
+    };
+
+    var removePlaylistFromSubscribedList = function(playlist){
+        var index = searchPlaylistInSubscribed(playlist);
+        if(index){
+            account.subscribedPlaylists.splice(index,1);
+            storeLocal();
+        }
+    };
+
 
     return {
         init : init,
@@ -99,7 +127,11 @@ account.service('account', ['$http','config','storage','$rootScope',function($ht
         connectGoogle : connectGoogle,
         refreshGoogleAccessToken : refreshGoogleAccessToken,
         logout : logout,
-        clear : clear
+        clear : clear,
+        searchPlaylistInSubscribed : searchPlaylistInSubscribed,
+        addPlaylistToSubscribedList : addPlaylistToSubscribedList,
+        removePlaylistFromSubscribedList : removePlaylistFromSubscribedList,
+
     };
 
 }]);

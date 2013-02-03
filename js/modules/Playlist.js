@@ -1,16 +1,12 @@
-     var playlist = angular.module('playlist', []);
+var playlist = angular.module('playlist', []);
 
-    playlist.service('playlist', ['$resource','config',function($resource,config) {
-        var suffix = "/:listController:id/:action";
-        var url = config.baseUrl + config.paths.playlists + suffix;
-        var actions = {
-            updateSongs : {method : 'POST', params : {action : 'songs'}},
-            put : {method : 'PUT'}
+/*playlist.service('playlist', ['$resource','config',function($resource,config) {
+    var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
 
-        };
+    return playlist;
+}]);*/
 
-        var resource = $resource(url,null,actions);
-
-        return resource;
-    }]);
-
+playlist.factory('playlist', ['$resource','config',function($resource,config) {
+    var playlist = $resource(config.baseUrl + config.paths.playlists + "/:listController:_id/:action/:extraId");
+    return playlist;
+}]);

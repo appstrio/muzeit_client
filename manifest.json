@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Muzeit Beta - Social Music Player ",
   "description" : "The best Youtube experience for Google Chrome!",
-  "version": "0.0.0.45",
+  "version": "0.0.0.50",
    "background": {
 	  "page" : "background.html",
       "persistent": false

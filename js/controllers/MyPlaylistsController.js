@@ -8,11 +8,11 @@ function MyPlaylistsController($scope,$location,bb,$location) {
     };
 
     $scope.playlistOwnerString = function(playlist){
-        if(playlist.owner == $scope.user._id){
+        if(playlist.owner == $scope.myUserId()){
             return "My playlist";
         }else{
             //return "By " _ playlist.owner.displayName + ".";
-            return "By Naftali Bennet :)";
+            return playlist.from.name;
         }
     };
 
@@ -38,6 +38,13 @@ function MyPlaylistsController($scope,$location,bb,$location) {
     $scope.showRemovePlaylistButton = function(playlist){
         return (playlist.title != "<on-the-go>" && playlist.title != "On The Go");
     };
+
+    $scope.unsubscribe = function(playlist,e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        $scope.unSubscribeFromPlaylist(playlist);
+    }
 
     $scope.trackEvent('playlists_controller');
 };

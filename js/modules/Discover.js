@@ -167,6 +167,23 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
         });
     };
 
+    var getUserProfileByFacebookId = function(fbId,success,error){
+        var url = config.baseUrl + config.paths.profileByFacebookId + '/' + fbId;
+        var songsPromise =  $http.get(url).success(function(response){
+                (success||angular.noop)(response);
+        }).error(function(err){
+                (error||angular.noop)(err);
+                console.error('Error getting discover ',err);
+        });
+
+        $q.all([songsPromise],function(array){
+            (success||angular.noop)(array);
+        },function(errArray){
+            (error||angular.noop)(errArray);
+        });
+
+    };
+
     var isFacebookPlaylistOld = function(playlist){
          return (!playlist || !playlist.timestamp ||  new Date().getTime() - playlist.timestamp > facebookPlaylistOldTimeout);
     };
@@ -179,6 +196,7 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
         getLocal : getLocal,
         getServer : getServer,
         getFacebookUserPlaylist :  getFacebookUserPlaylist,
+        getUserProfileByFacebookId : getUserProfileByFacebookId,
         firstTime : firstTime
     }
 }]);

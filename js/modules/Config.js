@@ -18,7 +18,10 @@
             discoverPlaylists   : "discoverPlaylists",
             discoverFirstTime   : "discoverFirstTime",
             facebookPlaylist    : "facebookPlaylist",
-            friends             : "getfacebookfriends"
+            friends             : "getfacebookfriends",
+            profileByFacebookId : "userContentByFid",
+            subscribe           : "account/subscribedPlaylists"
+
 
         };
 
@@ -29,7 +32,7 @@
         return {
             baseUrl : baseUrl,
             paths : paths,
-            oldTimeout : 1000*5,
+            oldTimeout : 1000*60,
             getBuildVersion : getBuildVersion
         }
     }]);

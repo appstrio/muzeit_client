@@ -26,10 +26,17 @@ angular.module('popupPlayerApp', ['StorageModule','config','bb','filters','direc
    }).
 
 
-   when('/playlist/:playlistId/:fbUserId', {
-       templateUrl: 'views/controllers/Playlist.html',
-       controller: PlaylistController,
+   when('/profile/facebook/:fbUserId', {
+       templateUrl: 'views/controllers/Profile.html',
+       controller: ProfileByFacebookController,
        resolve: bbDelay
+   }).
+
+
+   when('/playlist/:playlistId/:fbUserId', {
+   templateUrl: 'views/controllers/Playlist.html',
+   controller: PlaylistController,
+   resolve: bbDelay
    }).
 
    when('/playlist/:playlistId', {

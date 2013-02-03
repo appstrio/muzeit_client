@@ -1,12 +1,11 @@
-
 <!-- !!!!! NEW !!!!!  -->
 <div class="tab-on-the-go">
     <header class="pl-header clearfix otg-header">
         <form action="" class="pl-search">
             <input type="text" class="pl-search-input" placeholder="Search..." ng-model="searchInput" ng-click="switchToSearch()">
         </form>
-        <a href="" class="pl-unsubscribe-btn" ng-show="showUnsubscribeButton()">Unsubscribe</a>
-        <a href="" class="pl-unsubscribe-btn" ng-show="showSubscribeButton()" ng-click="import()">Import</a>
+        <a href="" class="pl-unsubscribe-btn" ng-show="showSubscribeButton() && isPlaylistSubscribed(playlist)" ng-click="unsubscribe(playlist,$event)">Unsubscribe</a>
+        <a href="" class="pl-unsubscribe-btn" ng-show="showSubscribeButton()  && !isPlaylistSubscribed(playlist)" ng-click="subscribe(playlist,$event)">Subscribe</a>
 
         <div class="dropdown" ng-show="showAddAllDropDown()">
             <a href="" class="pl-unsubscribe-btn"  ng-click="openAddAllToPlaylistWindow($event)">Add All</a>

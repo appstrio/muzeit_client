@@ -8,7 +8,8 @@ var dependencies = [
     deps.Recent,
     deps.YoutubeModule,
     deps.DiscoverModule,
-    deps.GA
+    deps.GA,
+    deps.Playlists
 ];
 
 

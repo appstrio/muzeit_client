@@ -75,7 +75,6 @@ angular.module('syncedResource', []).
             };
 
             var handleError = function(err){
-                console.log('handleError on synced '+key);
                 $rootScope.$emit('httpError',err);
             };
 

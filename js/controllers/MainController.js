@@ -1,10 +1,14 @@
 function MainController($scope,$location,$http,bb,config) {
-    $scope.bb=bb.bg;
-    $scope.loading=true;
-    $scope.alert={};
+    $scope.bb       = bb.bg;
+    $scope.loading  = true;
+    $scope.alert    = {};
+    $scope.volume   = 100;
 
-    var currentState;
-    var baseUrl = config.baseUrl;
+    var currentState,
+        baseUrl              = config.baseUrl,
+        volumeIsDragging     = false,
+        alertInterval;
+
 
     var init = function(){
         //start
@@ -13,7 +17,8 @@ function MainController($scope,$location,$http,bb,config) {
 
         if($scope.user && $scope.user._id){
             $scope.recent = bb.bg.resources.recent.get();
-            $scope.playlists = bb.bg.playlists();
+            $scope.playlists = bb.bg.resources.playlists.ownedPlaylists();
+            $scope.subscribedPlaylists = bb.bg.resources.playlists.subscribedPlaylists();
         }
         $scope.ga = bb.bg.resources.ga;
         $scope.loading = false;
@@ -26,15 +31,6 @@ function MainController($scope,$location,$http,bb,config) {
             $scope.ga.trackEvent(category,action,label,value);
         }
     };
-
-    bb.init(function(promise){
-        if(promise.ready){
-            init();
-            return;
-        }else{
-            promise.then(init);
-        }
-    });
 
     $scope.togglePlay = function(){
         // change active screen
@@ -70,33 +66,10 @@ function MainController($scope,$location,$http,bb,config) {
       return bb.bg.methods.isConnected();
     };
 
-    $scope.$on('$routeChangeSuccess', function(){
-        if(bb&&bb.bg&&bb.bg.methods) bb.bg.methods.changeCurrentState({path : $location.path()});
-    });
-
     $scope.switchToSearch = function(){
         bb.bg.setLastSearch({searchInput : ''});
         if($location.path() != '/search' )$location.path('/search');
     };
-
-
-    $scope.$on('background',function(event,args){
-        $scope.$apply(function(){
-
-        });
-    });
-    $scope.volume = 0;
-
-    $scope.$watch(function(){
-        if($scope.currentState && $scope.currentState.playerState) return $scope.currentState.playerState.volume;
-        else return 0;
-    },function(){
-        if(!volumeIsDragging){
-            if($scope.currentState && $scope.currentState.playerState) $scope.volume = $scope.currentState.playerState.volume;
-            else $scope.volume=0;
-        }
-    });
-    var volumeIsDragging = false;
 
     $scope.connectFacebook = function(){
         bb.bg.methods.connectFacebook();
@@ -118,11 +91,8 @@ function MainController($scope,$location,$http,bb,config) {
 
     };
 
-
-
-
     $scope.isSongActive = function(song){
-        return (bb.bg.currentState.song === song);
+        return (bb.bg.currentState.song == song);
     };
 
 
@@ -132,90 +102,67 @@ function MainController($scope,$location,$http,bb,config) {
 
 
     $scope.addSongToPlaylist = function(song,playlist,e){
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
         if(!bb.bg.ready) return;
         if (playlist === "on-the-go"){
             playlist = bb.bg.onTheGo();
         }
-        if(e){
-            e.preventDefault();
-            e.stopPropagation();
-        //    var alertElement = $(e.target).parents('li.item').eq(0).find('.item-alert')[0];
-        //    if(alertElement)
-        //        showAlertOnItem(alertElement,"Song was added to playlist");
-        }
-        bb.bg.methods.addSongToPlaylist(song,playlist,function(){
+
+        bb.bg.methods.playlists.addSongToPlaylist(song,playlist,function(){
             showAlert('Song was added to playlist.');
         },function(){
             showAlert('Could not add song to playlist.');
-
         });
         hideMainDropdown();
     };
 
 
-    var showAlertOnItem = function(elm,message){
-       elm.fadeIn(function(){
-          setTimeout(function(){
-              elm.fadeOut();
-          },2000);
-       });
-    };
+    $scope.addAllToNewPlaylist = function(playlist,newPlaylistTitle,e){
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
 
-    $scope.addAllToNewPlaylist = function(playlist,newPlaylistTitle){
         if(!newPlaylistTitle) return false;
 
-        var newPlaylist={};
-        newPlaylist.songs = angular.copy(playlist.songs);
-        newPlaylist.title = newPlaylistTitle;
-        newPlaylist.isPublic=true;
-        tempStripSongsV(newPlaylist);
-        bb.bg.methods.addNewPlaylist(newPlaylist,function(playlist){
+        bb.bg.resources.playlists.createNewPlaylistWithSongs.addNewPlaylist(newPlaylistTitle,playlist.songs,function(playlist){
             $scope.$apply(function(){
                 $location.path('/playlist/'+playlist._id);
+                showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
             });
-            showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
 
         },function(e){
             showAlert('Could not create new playlist, please try again.');
             console.error('Error saving new playlist',e);
         });
+
         hideMainDropdown();
 
     };
 
-    var tempStripSongsV = function(playlist){
-        for(var i in playlist.songs){
-            delete playlist.songs[i].__v;
-            delete playlist.songs[i]['$$hashKey'];
+    $scope.addSongToNewPlaylist = function(song,newPlaylistTitle,e){
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
         }
-    };
 
-    $scope.addSongToNewPlaylist = function(song,newPlaylistTitle){
         if(!newPlaylistTitle) return false;
-        var newPlaylist={};
-        newPlaylist.title = newPlaylistTitle;
-        newPlaylist.isPublic=true;
 
-        bb.bg.methods.addNewPlaylist(newPlaylist,function(playlist){
+        bb.bg.resources.playlists.createNewPlaylistWithSongs.addNewPlaylist(newPlaylistTitle,[song],function(playlist){
             $scope.$apply(function(){
-                if(song){
-                    bb.bg.methods.addSongToPlaylist(song,playlist,function(){
-                        $location.path('/playlist/'+playlist._id);
-                        showAlert('A new playlist was created and a song was added.');
-                    },function(error){
-                        showAlert('Could not add song to playlist.');
-                        console.error('Error adding song to playlist');
-                    });
-                }else{
-                    $location.path('/playlist/'+playlist._id);
-                }
-
+                $location.path('/playlist/'+playlist._id);
+                showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
             });
 
         },function(e){
             showAlert('Could not create new playlist, please try again.');
             console.error('Error saving new playlist',e);
         });
+
         $scope.showAddToPlaylistDropDown = false;
         hideMainDropdown();
 
@@ -230,7 +177,7 @@ function MainController($scope,$location,$http,bb,config) {
             // stop
             bb.bg.methods.stop();
         }
-        bb.bg.methods.removeSongFromPlaylist(song,playlist);
+        bb.bg.resources.playlists.removeSongFromPlaylist(song,playlist);
         showAlert('Song was removed from playlist.');
     };
 
@@ -267,7 +214,6 @@ function MainController($scope,$location,$http,bb,config) {
 
     };
 
-    var alertInterval;
     var showAlert = function(message){
         $scope.alert.message = message;
         $scope.alert.display=true;
@@ -285,12 +231,34 @@ function MainController($scope,$location,$http,bb,config) {
 
     };
 
-    $scope.myUserId = function(){
-        return bb.bg.user()._id;
+
+    $scope.subscribeToPlaylist = function(playlist,success,error){
+        return bb.bg.resources.playlists.subscribeToPlaylist(playlist,function(){
+            showAlert("You have successfully subscribed to playlist '" + playlist.title +"'");
+            (success||angular.noop)();
+            if(!$scope.$$phase)$scope.$apply();
+        },function(){
+            (error||angular.noop)();
+            if(!$scope.$$phase)$scope.$apply();
+        });
     };
 
-    $scope.skipWelcomeScreen = function(){
-        init();
+    $scope.unSubscribeFromPlaylist = function(playlist,success,error){
+        var playlistTitle = playlist.title;
+        return bb.bg.resources.playlists.unSubscribeFromPlaylist(playlist,function(){
+            showAlert("You have successfully unsubscribed from playlist '" + playlistTitle + "'");
+            (success||angular.noop)();
+            if(!$scope.$$phase)$scope.$apply();
+        },function(){
+            showAlert("Unsubscribe from playlist '" + playlistTitle + "' was failed.");
+            (error||angular.noop)();
+            if(!$scope.$$phase)$scope.$apply();
+        });
+    };
+
+    $scope.isPlaylistSubscribed = function(playlist){
+        var result = bb.bg.resources.playlists.checkIfPlaylistIsSubscribed(playlist);
+        return (result !== false);
     };
 
     $scope.sharePlaylist = function(playlist,e){
@@ -302,8 +270,8 @@ function MainController($scope,$location,$http,bb,config) {
         $http.post(baseUrl + config.paths.playlists + "/" + playlist._id + "/share").success(function(){
             showAlert("The playlist has been shared to your Facebook.");
         }).error(function(){
-            showAlert("Error sharing a playlist.");
-        });
+                showAlert("Error sharing a playlist.");
+            });
     };
 
     $scope.likePlaylist = function(playlist,e){
@@ -316,7 +284,7 @@ function MainController($scope,$location,$http,bb,config) {
             showAlert("You liked the playlist on Facebook.");
         }).error(function(){
                 showAlert("Error like a playlist.");
-        });
+            });
     };
 
     $scope.shareSong = function(song,e){
@@ -342,8 +310,47 @@ function MainController($scope,$location,$http,bb,config) {
             showAlert("You liked the song on Facebook.");
         }).error(function(){
                 showAlert("Error liking a song.");
-        });
+            });
     };
+
+    $scope.myUserId = function(){
+        return bb.bg.user()._id;
+    };
+
+    $scope.skipWelcomeScreen = function(){
+        init();
+    };
+
+
+    bb.init(function(promise){
+        if(promise.ready){
+            init();
+            return;
+        }else{
+            promise.then(init);
+        }
+    });
+
+    $scope.$on('$routeChangeSuccess', function(){
+        if(bb&&bb.bg&&bb.bg.methods) bb.bg.methods.changeCurrentState({path : $location.path()});
+    });
+
+    $scope.$on('background',function(event,args){
+        $scope.$apply(function(){
+
+        });
+    });
+
+    $scope.$watch(function(){
+        if($scope.currentState && $scope.currentState.playerState) return $scope.currentState.playerState.volume;
+        else return 0;
+    },function(){
+        if(!volumeIsDragging){
+            if($scope.currentState && $scope.currentState.playerState) $scope.volume = $scope.currentState.playerState.volume;
+            else $scope.volume=0;
+        }
+    });
+
 
     // listen to message passing
     $( ".vc_pointer" ).draggable({ containment: "parent", scroll: false, axis: "y" ,

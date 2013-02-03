@@ -26,7 +26,7 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
             finishLoadingPlaylist();
         }else{
             $scope.showPlaylistsNavigation=true;
-             bb.bg.methods.getPlaylist($routeParams.playlistId,function(response){
+             bb.bg.resources.playlists.getPlaylist($routeParams.playlistId,function(response){
                 $scope.playlist=response;
 
                  $scope.loading=false;
@@ -49,7 +49,6 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     };
 
     var finishLoadingPlaylist = function(){
-        console.log('$scope.playlist',$scope.playlist);
         $scope.trackEvent('playlist_controller',$scope.playlist.title);
     };
 
@@ -147,6 +146,19 @@ function PlaylistController ($scope,bb,$routeParams,$location,discover){
     $scope.import = function(){
         $scope.addAllToNewPlaylist($scope.playlist,$scope.playlist.title);
     };
+
+    $scope.subscribe = function(playlist,e){
+        e.preventDefault();
+        e.stopPropagation();
+        $scope.subscribeToPlaylist(playlist);
+    };
+
+    $scope.unsubscribe = function(playlist,e){
+        e.preventDefault();
+        e.stopPropagation();
+        $scope.unSubscribeFromPlaylist(playlist);
+    };
+
 
 };
 

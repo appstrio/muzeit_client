@@ -5,8 +5,8 @@
     </form>
     <ul class="otg-search-option">
         <li class="so_label">Search in:</li>
-        <li ng-click="changeSearchIn('youtube',$event)" ng-class="{active : searchIn == 'youtube'}"><a href="">YouTube</a></li>
-        <li ng-click="changeSearchIn('friends',$event)"  ng-class="{active : searchIn == 'friends'}"><a href="">Friends</a></li>
+        <li ng-class="{active : searchIn == 'youtube'}"><a href=""  ng-click="changeSearchIn('youtube',$event)">YouTube</a></li>
+        <li  ng-class="{active : searchIn == 'friends'}"><a href="" ng-click="changeSearchIn('friends',$event)">Friends</a></li>
     </ul>
 </header>
 <div class="otg-body">
@@ -27,8 +27,8 @@
             <li ng-show="song.views">{{song.views|number}}  Views</li>
         </ul>
         <ul class="otg-social otg-not-dreggable clearfix">
-            <li class="so_like"><a href="">like</a></li>
-            <li class="so_share"><a href="">share</a></li>
+            <li class="so_like"><a href="" ng-click="likeSong(song,$event)">like</a></li>
+            <li class="so_share"><a href=""  ng-click="shareSong(song,$event)">share</a></li>
             <li class="so_delete"><a href="">delete</a></li>
             <li class="so_add">
                 <a href="" class="opener" ng-click="openAddToPlaylist($event)">Add to playlist</a>
