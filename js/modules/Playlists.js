@@ -153,6 +153,7 @@ playlists.service('playlists', ['$http','config','account','storage','$q','playl
             storeLocal('ownedPlaylists',ownedPlaylists);
             if(destPlaylist._id){
                 playlist.save({_id : destPlaylist._id, action : 'songs'},newSong,function(response){
+                    (success||angular.noop)(response);
                 },function(e){
                     console.error(e);
                 });

@@ -39,12 +39,10 @@ function MainController($scope,$location,$http,bb,config) {
 
     $scope.nextSong = function(){
         bb.bg.methods.playNextSong(true);
-        bb.bg.resources.recent.addSong($scope.currentState.song);
     };
 
     $scope.previousSong = function(){
         bb.bg.methods.playPreviousSong();
-        bb.bg.resources.recent.addSong($scope.currentState.song);
     };
 
     $scope.selectSong = function(song,playlist,dontPushToRecent){
@@ -112,7 +110,7 @@ function MainController($scope,$location,$http,bb,config) {
             playlist = bb.bg.onTheGo();
         }
 
-        bb.bg.methods.playlists.addSongToPlaylist(song,playlist,function(){
+        bb.bg.resources.playlists.addSongToPlaylist(song,playlist,function(){
             showAlert('Song was added to playlist.');
         },function(){
             showAlert('Could not add song to playlist.');
@@ -152,10 +150,10 @@ function MainController($scope,$location,$http,bb,config) {
 
         if(!newPlaylistTitle) return false;
 
-        bb.bg.resources.playlists.createNewPlaylistWithSongs.addNewPlaylist(newPlaylistTitle,[song],function(playlist){
+        bb.bg.resources.playlists.createNewPlaylistWithSongs(newPlaylistTitle,[song],function(playlist){
             $scope.$apply(function(){
                 $location.path('/playlist/'+playlist._id);
-                showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
+                showAlert('A new playlist was created : "'+ newPlaylistTitle +'".');
             });
 
         },function(e){

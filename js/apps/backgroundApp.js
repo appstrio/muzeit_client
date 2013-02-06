@@ -127,12 +127,14 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
                 index++;
             }
         }
-        changeCurrentState({song : currentState.playlist.songs[index], play:true},{loadNewVideo:true,refreshIframe:true},{updatePinnedPlayer:true,updatePopupPlayer : true});
+        var song = currentState.playlist.songs[index];
+        changeCurrentState({song : song, play:true},{loadNewVideo:true,refreshIframe:true},{updatePinnedPlayer:true,updatePopupPlayer : true});
         if(currentState.playlist.title != 'recent')recent.addSong(song);
     };
 
     var playPreviousSong = function(){
-        if(currentState.playlist)return;
+        console.log('playPreviousSong',currentState.playlist);
+        if(!currentState.playlist || !currentState.playlist.songs)return;
         var index = $.inArray(currentState.song,currentState.playlist.songs);
         if (index == -1){
             // not found
@@ -145,8 +147,9 @@ angular.module('backgroundApp', ['ngResource','config','syncedResource','playlis
             index--;
         }
 
-        recent.addSong(song);
-        changeCurrentState({song : currentState.playlist.songs[index], play:true},{loadNewVideo:true,refreshIframe:true},{updatePinnedPlayer:true,updatePopupPlayer : true});
+        var song = currentState.playlist.songs[index];
+        changeCurrentState({song : song, play:true},{loadNewVideo:true,refreshIframe:true},{updatePinnedPlayer:true,updatePopupPlayer : true});
+        if(currentState.playlist.title != 'recent')recent.addSong(song);
 
     };
 
