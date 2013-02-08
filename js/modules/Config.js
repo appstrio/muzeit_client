@@ -14,6 +14,7 @@
             logout              : "logout",
             onTheGo             : "account/onthego",
             playlists           : "playlists",
+            song                : "song",
             discover            : "discover",
             discoverPlaylists   : "discoverPlaylists",
             discoverFirstTime   : "discoverFirstTime",

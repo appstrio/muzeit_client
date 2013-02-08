@@ -127,10 +127,10 @@ function MainController($scope,$location,$http,bb,config) {
 
         if(!newPlaylistTitle) return false;
 
-        bb.bg.resources.playlists.createNewPlaylistWithSongs.addNewPlaylist(newPlaylistTitle,playlist.songs,function(playlist){
+        bb.bg.resources.playlists.createNewPlaylistWithSongs(newPlaylistTitle,playlist.songs,function(playlist){
             $scope.$apply(function(){
                 $location.path('/playlist/'+playlist._id);
-                showAlert('A new playlist was created : "'+ newPlaylist.title +'".');
+                showAlert('A new playlist was created : "'+ newPlaylistTitle +'".');
             });
 
         },function(e){
@@ -291,11 +291,12 @@ function MainController($scope,$location,$http,bb,config) {
             e.preventDefault();
         }
         if(!song || !song.youtubeId)return;
-        $http.post(baseUrl + config.paths.playlists + "/" + song.youtubeId + "/share").success(function(){
+        $http.post(baseUrl + config.paths.song + "/" + song.youtubeId + "/share").success(function(response){
+            console.log('share song response',response);
             showAlert("The song has been shared to your Facebook.");
         }).error(function(){
                 showAlert("Error sharing a song.");
-            });
+        });
     };
 
     $scope.likeSong = function(song,e){
@@ -304,7 +305,9 @@ function MainController($scope,$location,$http,bb,config) {
             e.preventDefault();
         }
         if(!song || !song.youtubeId)return;
-        $http.post(baseUrl + config.paths.playlists + "/" + song.youtubeId + "/like").success(function(){
+        $http.post(baseUrl + config.paths.song + "/" + song.youtubeId + "/like").success(function(response){
+            console.log('like song response',response);
+
             showAlert("You liked the song on Facebook.");
         }).error(function(){
                 showAlert("Error liking a song.");

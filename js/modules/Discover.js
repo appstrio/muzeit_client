@@ -99,7 +99,7 @@ discover.service('discover', ['$http','config','storage','$q',function($http,con
             response.length=0;
             response=null;
         }).error(function(err){
-                (error||angular.noop)(err);
+          //      (error||angular.noop)(err);
                 console.error('Error getting discover ',err);
         });
 

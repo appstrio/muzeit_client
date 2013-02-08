@@ -202,7 +202,7 @@ playlists.service('playlists', ['$http','config','account','storage','$q','playl
                         ownedPlaylists.unshift(onTheGo);
                     },function(err){
                         console.error('Error getting onTheGo',err);
-                        handleHttpErrors(err);
+                        //handleHttpErrors(err);TODO: add global error handler
                         //error
                         onTheGo=playlists.newEmptyPlaylist("<on-the-go>");
                     });
